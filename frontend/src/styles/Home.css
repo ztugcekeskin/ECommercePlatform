@@ -1,0 +1,121 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #412e39, #1a0933, #383337);
+}
+
+.home {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #412e39, #1a0933, #383337);
+}
+
+/* Üst Menü */
+.navbar {
+    background: #390325;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    box-shadow: 0 5px 20px rgba(168, 85, 247, .25);
+}
+
+/* Logo */
+.logo img {
+    width: 55px;
+    height: 55px;
+}
+
+/* Giriş Yap - Kayıt Ol */
+.auth-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.login-link,
+.register-link {
+    text-decoration: none;
+    color: white;
+    background: #9333ea;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: .3s;
+    font-weight: bold;
+}
+
+.login-link:hover,
+.register-link:hover {
+    background: #7e22ce;
+    transform: scale(1.05);
+}
+
+/* Alt Menü */
+.menu {
+    background: #2b0120;
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    padding: 15px;
+}
+
+.menu a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: .3s;
+}
+
+.menu a:hover {
+    color: #a855f7;
+}
+
+/* Orta Alan */
+.hero {
+    min-height: calc(100vh - 140px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 30px;
+}
+
+.hero h1 {
+    color: white;
+    font-size: 60px;
+    margin-bottom: 25px;
+}
+
+.hero p {
+    color: #ddd;
+    font-size: 20px;
+    max-width: 700px;
+    line-height: 1.8;
+}
+
+/* Responsive */
+@media(max-width:768px){
+
+    .navbar{
+        padding:15px 20px;
+    }
+
+    .menu{
+        gap:20px;
+        font-size:14px;
+        flex-wrap:wrap;
+    }
+
+    .hero h1{
+        font-size:42px;
+    }
+
+    .hero p{
+        font-size:17px;
+    }
+
+}
