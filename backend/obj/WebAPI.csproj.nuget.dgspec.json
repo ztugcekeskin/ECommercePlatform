@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ztugc\\Projects\\WebAPI\\WebAPI.csproj": {}
+    "C:\\Users\\ztugc\\OneDrive\\Desktop\\WebSecurityProject\\backend\\WebAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ztugc\\Projects\\WebAPI\\WebAPI.csproj": {
+    "C:\\Users\\ztugc\\OneDrive\\Desktop\\WebSecurityProject\\backend\\WebAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ztugc\\Projects\\WebAPI\\WebAPI.csproj",
+        "projectUniqueName": "C:\\Users\\ztugc\\OneDrive\\Desktop\\WebSecurityProject\\backend\\WebAPI.csproj",
         "projectName": "WebAPI",
-        "projectPath": "C:\\Users\\ztugc\\Projects\\WebAPI\\WebAPI.csproj",
+        "projectPath": "C:\\Users\\ztugc\\OneDrive\\Desktop\\WebSecurityProject\\backend\\WebAPI.csproj",
         "packagesPath": "C:\\Users\\ztugc\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ztugc\\Projects\\WebAPI\\obj\\",
+        "outputPath": "C:\\Users\\ztugc\\OneDrive\\Desktop\\WebSecurityProject\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ztugc\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -54,9 +54,23 @@
               "target": "Package",
               "version": "[10.0.9, )"
             },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[10.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[10.0.10, )"
+            },
             "MongoDB.Driver": {
               "target": "Package",
               "version": "[3.10.0, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[10.0.3, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

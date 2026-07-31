@@ -1,0 +1,108 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #412e39, #1a0933, #383337);
+  padding: 20px;
+}
+
+.register-card {
+  background: #390325;
+  padding: 35px;
+  border-radius: 20px;
+  box-shadow: 0 10px 35px rgba(168, 85, 247, .35);
+  width: 100%;
+  max-width: 700px;
+}
+
+.register-card h2 {
+  color: white;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  display: block;
+  color: #f6f5f5;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.input-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.form-row.three {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.form-row .input-group {
+  margin-bottom: 0;
+}
+
+
+
+.input-group label {
+  color: white;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.input-group input,
+.input-group select {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #2c2c2c;
+  color: white;
+  outline: none;
+  transition: .3s;
+  font-size: 14px;
+}
+
+.input-group input::placeholder {
+  color: #aaa;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border: 2px solid #76106d;
+}
+
+.register-submit-btn {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  background: #9333ea;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.register-submit-btn:hover {
+  background: #7e22ce;
+  transform: scale(1.02);
+}
+
+@media (max-width: 480px) {
+  .register-card {
+    padding: 25px;
+  }
+
+  .register-card h2 {
+    font-size: 22px;
+  }
+}

@@ -1,18 +1,22 @@
-using WebAPI.Services;
 using WebAPI.Settings;
+using Microsoft.EntityFrameworkCore;
+using WebAPI.Data;
+using WebAPI.Repositories;
+using WebAPI.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<MongoDbSettings>(
     builder.Configuration.GetSection("MongoDbSettings"));
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSql")));
+
 builder.Services.AddControllers();
-
-builder.Services.AddScoped<UserService>();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
