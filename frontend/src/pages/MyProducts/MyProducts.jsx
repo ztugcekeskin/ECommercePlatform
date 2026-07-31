@@ -155,7 +155,6 @@ const updateProduct = async () => {
   {showForm ? "İptal" : "+ Yeni Ürün Ekle"}
 </button>
 
-
       {showForm && (
         <div className="product-form">
           <input
@@ -191,11 +190,11 @@ const updateProduct = async () => {
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
           />
-
-<button
-  className="save-btn"
-  onClick={editingId ? updateProduct : addProduct}
->            {editingId ? "Güncelle" : "Kaydet"}
+            <button
+            className="save-btn"
+            onClick={editingId ? updateProduct : addProduct}
+            >
+            {editingId ? "Güncelle" : "Kaydet"}
           </button>
         </div>
       )}
@@ -248,7 +247,7 @@ const updateProduct = async () => {
                   behavior: "smooth",
               });
             }}
->
+           >
                     Düzenle
                   </button>
 

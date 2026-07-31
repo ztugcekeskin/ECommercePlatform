@@ -9,7 +9,6 @@ namespace WebAPI.Controllers ;
 [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-
     private readonly IUserRepository _userRepository;
 
     public AuthController(IUserRepository userRepository)
@@ -62,8 +61,8 @@ public async Task<IActionResult> Register([FromBody] RegisterDto dto)
 }
 
     [HttpPost("login")]
-public async Task<IActionResult> Login([FromBody] LoginRequest request)
-{
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    {
     var user = await _userRepository.GetByUsernameAsync(request.Username);
 
     if (user == null)
@@ -100,11 +99,11 @@ public async Task<IActionResult> Login([FromBody] LoginRequest request)
             user.ImageUrl
         }
     });
-}
+    }
 
-[HttpPut("{id}")]
-public async Task<IActionResult> UpdateProfile(int id, UserDto dto)
-{
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateProfile(int id, UserDto dto)
+    {
     var user = await _userRepository.GetByIdAsync(id);
 
     if (user == null)
@@ -122,7 +121,6 @@ public async Task<IActionResult> UpdateProfile(int id, UserDto dto)
     user.Email = dto.Email;
     user.Username = dto.Username;
     user.Role = dto.Role;
-
   
     user.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
@@ -132,6 +130,6 @@ public async Task<IActionResult> UpdateProfile(int id, UserDto dto)
     {
         message = "Profil başarıyla güncellendi."
     });
-}
+    }
 
 }
