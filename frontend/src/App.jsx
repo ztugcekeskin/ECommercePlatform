@@ -5,8 +5,10 @@ import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Profile from "./pages/Profile/Profile";
 import MyProducts from "./pages/MyProducts/MyProducts";
+import Footer from "./components/Footer/Footer";
 
 function App() {
+
   return (
     <BrowserRouter>
 
@@ -20,6 +22,8 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/my-products" element={<MyProducts />} />
       </Routes>
+
+      <Footer />
 
     </BrowserRouter>
   );

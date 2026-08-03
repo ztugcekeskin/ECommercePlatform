@@ -66,3 +66,24 @@
 .edit-btn:hover{
     background:#5630a3;
 }
+.edit-form{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-top:20px;
+}
+
+.edit-form input{
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+}
+
+.edit-form button{
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#4CAF50;
+    color:white;
+    cursor:pointer;
+}
