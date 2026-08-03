@@ -19,6 +19,10 @@ public class ProductRepository : IProductRepository
         .Where(p => p.SellerId == sellerId)
         .ToListAsync();
     }
+    public async Task<List<Product>> GetAllAsync()
+{
+    return await _context.Products.ToListAsync();
+}
     public async Task AddAsync(Product product)
     {
         await _context.Products.AddAsync(product);

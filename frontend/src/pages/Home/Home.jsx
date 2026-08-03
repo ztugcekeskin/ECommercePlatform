@@ -1,4 +1,5 @@
 import HomeCarousel from "../../components/Carousel/Carousel";
+import Product from "../Products/Product";
 import "./Home.css";
 
 function Home() {
@@ -8,7 +9,7 @@ function Home() {
       <HomeCarousel />
 
       <section className="hero">
-        <h1>Hoş Geldiniz</h1>
+      <Product />      
       </section>
       
     </div>

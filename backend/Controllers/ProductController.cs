@@ -16,6 +16,14 @@ public class ProductController : ControllerBase
         _productRepository = productRepository;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAllProducts()
+    {
+        var products = await _productRepository.GetAllAsync();
+
+        return Ok(products);
+    }
+
     [HttpGet("seller/{sellerId}")]
     public async Task<IActionResult> GetSellerProducts(int sellerId)
     {
@@ -23,6 +31,7 @@ public class ProductController : ControllerBase
 
         return Ok(products);
     }
+    
 
     [HttpPost]
     public async Task<IActionResult> AddProduct([FromBody] ProductDto dto)
