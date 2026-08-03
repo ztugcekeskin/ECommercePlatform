@@ -88,4 +88,5 @@ function Product() {
     </div>
   );
 }
+
 export default Product;
