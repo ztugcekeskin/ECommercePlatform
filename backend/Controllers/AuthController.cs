@@ -100,36 +100,4 @@ public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         }
     });
     }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateProfile(int id, UserDto dto)
-    {
-    var user = await _userRepository.GetByIdAsync(id);
-
-    if (user == null)
-    {
-        return NotFound(new
-        {
-            message = "Kullanıcı bulunamadı."
-        });
-    }
-
-    user.FirstName = dto.FirstName;
-    user.LastName = dto.LastName;
-    user.Age = dto.Age;
-    user.Gender = dto.Gender;
-    user.Email = dto.Email;
-    user.Username = dto.Username;
-    user.Role = dto.Role;
-  
-    user.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-
-    await _userRepository.Update(user);
-
-    return Ok(new
-    {
-        message = "Profil başarıyla güncellendi."
-    });
-    }
-
 }

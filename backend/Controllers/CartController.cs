@@ -57,4 +57,5 @@ public class CartController : ControllerBase
             message = "Ürün sepete eklendi."
         });
     }
+
 }
