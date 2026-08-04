@@ -8,7 +8,6 @@ import MyProducts from "./pages/MyProducts/MyProducts";
 import Footer from "./components/Footer/Footer";
 
 function App() {
-
   return (
     <BrowserRouter>
 
@@ -28,5 +27,4 @@ function App() {
     </BrowserRouter>
   );
 }
-
 export default App;

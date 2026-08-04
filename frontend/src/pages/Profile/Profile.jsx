@@ -46,7 +46,6 @@ function Profile() {
         password
       }
     );
-
     const updatedUser = {
       ...user,
       firstName,
@@ -137,7 +136,7 @@ function Profile() {
       {showForm ? "İptal" : "Profili Düzenle"}
       </button>
       {showForm && (
-  <div className="edit-form">
+    <div className="edit-form">
 
     <input
       value={firstName}
@@ -187,11 +186,9 @@ function Profile() {
       Kaydet
     </button>
 
-  </div>
+    </div>
 )}
-
       </div>
-
     </div>
   );
 }

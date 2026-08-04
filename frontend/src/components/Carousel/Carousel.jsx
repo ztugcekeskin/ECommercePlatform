@@ -1,6 +1,5 @@
 import BootstrapCarousel from "react-bootstrap/Carousel";
 import "./Carousel.css";
-
 import makeupSale from "../../assets/images/makyaj-indirim.jpg";
 import backToSchool from "../../assets/images/okula-donus.jpg";
 import hairAccessories from "../../assets/images/sac-aksesuar-indirim.jpg";
@@ -34,5 +33,4 @@ function HomeCarousel() {
     </BootstrapCarousel>
   );
 }
-
 export default HomeCarousel;

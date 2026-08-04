@@ -31,8 +31,6 @@ public class ProductController : ControllerBase
 
         return Ok(products);
     }
-    
-
     [HttpPost]
     public async Task<IActionResult> AddProduct([FromBody] ProductDto dto)
     {

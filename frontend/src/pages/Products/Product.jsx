@@ -30,7 +30,6 @@ function Product() {
           >
             ☐☐ 2'li
           </button>
-
           <button
             className={columns === 4 ? "active" : ""}
             onClick={() => setColumns(4)}
@@ -84,9 +83,7 @@ function Product() {
           ))}
         </div>
       )}
-
     </div>
   );
 }
-
 export default Product;
