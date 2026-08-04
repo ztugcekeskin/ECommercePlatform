@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { FaCamera } from "react-icons/fa";
 import axios from "axios";
 import "./Profile.css";
 
@@ -13,14 +14,24 @@ function Profile() {
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
+    const loadUser = async () => {
     const storedUser = localStorage.getItem("user");
 
-    if (storedUser) {
-  const data = JSON.parse(storedUser);
+    if (!storedUser) return;
 
-  setUser(data);
+      const data = JSON.parse(storedUser);
+
+      try {
+        const response = await axios.get(
+          `http://localhost:5070/api/User/${data.id}`
+        );
+
+
+
+  setUser(response.data);  
   console.log(user);
   setFirstName(data.firstName);
   setLastName(data.lastName);
@@ -28,13 +39,22 @@ function Profile() {
   setEmail(data.email);
   setAge(data.age);
   setGender(data.gender);
-}
-}, [])
+  }
+    catch (error) {
+    console.error(error);
+  }
+  };
+
+  loadUser();
+
+},[])
+
+
   const updateProfile = async () => {
   try {
 
     await axios.put(
-      `http://localhost:5070/api/Auth/${user.id}`,
+    `http://localhost:5070/api/User/${user.id}`,
       {
         firstName,
         lastName,
@@ -67,16 +87,57 @@ function Profile() {
 
     alert("Profil güncellendi.");
 
+  } 
+  
+  catch (error) {
+
+  console.error(error);
+
+  if (error.response?.data?.errors) {
+    alert(error.response.data.errors.join("\n"));
+  } else {
+    alert(
+      "Profil güncellenemedi: " +
+      (error.response?.data?.message || "Bir hata oluştu.")
+    );
+  }
+
+}
+};
+
+
+  const uploadPhoto = async (e) => {
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append("Image", file);
+
+  try {
+    const response = await axios.post(
+      `http://localhost:5070/api/User/${user.id}/upload-photo`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    setUser({
+      ...user,
+      imageUrl: response.data.imageUrl,
+    });
+
   } catch (error) {
-
     console.error(error);
-
-    alert("Profil güncellenemedi.");
-
+    alert("Fotoğraf yüklenemedi.");
   }
 };
 
-  if (!user) {
+  if (!user) 
+    {
     return (
       <div className="profile-container">
         <h2>Giriş yapmanız gerekiyor.</h2>
@@ -87,15 +148,34 @@ function Profile() {
   return (
     <div className="profile-container">
       <div className="profile-card">
-        <div className="profile-photo">
-          <img
-            src={
-              user.imageUrl ||
-              "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-            }
-            alt="Profil"
-          />
-        </div>
+      <div className="profile-photo">
+
+      <img
+        src={
+        user.imageUrl
+        ? "http://localhost:5070" + user.imageUrl
+        : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+        }
+        alt="Profil"
+      />
+
+    <button
+      className="camera-btn"
+      onClick={() => fileInputRef.current.click()}
+      type="button"
+      >
+      <FaCamera />
+    </button>
+
+      <input
+      type="file"
+      accept="image/*"
+      ref={fileInputRef}
+      style={{ display: "none" }}
+      onChange={uploadPhoto}
+      />
+
+    </div>
 
         <h2>
           {user.firstName} {user.lastName}

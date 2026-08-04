@@ -31,15 +31,23 @@ function Register() {
       );
       console.log(response.data);
       alert(`Kayıt başarılı: ${response.data.message}`);
-    } catch (error) {
-      console.error("Kayıt hatası:", error);
-      alert(
-        "Kayıt başarısız: " +
-          (error.response?.data?.message || "Kayıt sırasında bir hata oluştu.")
-      );
-    }
+    } 
+    catch (error) {
+  console.error("Kayıt hatası:", error);
+
+  if (error.response?.data?.errors) {
+    alert(error.response.data.errors.join("\n"));
+  } else {
+    alert(
+      "Kayıt başarısız: " +
+        (error.response?.data?.message || "Kayıt sırasında bir hata oluştu.")
+    );
+  }
+}
   };
+
   return (
+
     <div className="register-container">
       <div className="register-card">
         <h2>Kayıt Ol</h2>

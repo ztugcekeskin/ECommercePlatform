@@ -19,15 +19,51 @@ namespace WebAPI.Controllers ;
     [HttpPost("register")]
 public async Task<IActionResult> Register([FromBody] RegisterDto dto)
 {
+    var errors = new List<string>();
+
+    if (string.IsNullOrWhiteSpace(dto.Username))
+        errors.Add("Kullanıcı adı boş bırakılamaz.");
+
+    if (dto.Username.Length < 2 || dto.Username.Length > 30)
+        errors.Add("Kullanıcı adı 2-30 karakter arasında olmalıdır.");
+
+if (!Regex.IsMatch(dto.Username, @"^[a-zA-Z0-9.!()_]+$"))
+    errors.Add("Kullanıcı adı sadece harf, rakam ve şu özel karakterleri içerebilir: . ! ( ) _");
+
     if (!Regex.IsMatch(dto.Email,
-        @"^[a-zA-Z0-9._%+]+@(gmail|hotmail|outlook)\.com$"))
+        @"^[a-zA-Z0-9._%+-]+@(gmail|hotmail|outlook)\.com$"))
+    {
+        errors.Add("Sadece @gmail.com, @hotmail.com veya @outlook.com kullanılabilir.");
+    }
+
+    if (string.IsNullOrWhiteSpace(dto.Password))
+        errors.Add("Şifre boş bırakılamaz.");
+    else
+    {
+        if (dto.Password.Length < 8)
+            errors.Add("Şifre en az 8 karakter olmalıdır.");
+
+        if (!Regex.IsMatch(dto.Password, @"[A-Z]"))
+            errors.Add("Şifre en az 1 büyük harf içermelidir.");
+
+        if (!Regex.IsMatch(dto.Password, @"[a-z]"))
+            errors.Add("Şifre en az 1 küçük harf içermelidir.");
+
+        if (!Regex.IsMatch(dto.Password, @"[0-9]"))
+            errors.Add("Şifre en az 1 rakam içermelidir.");
+
+        if (!Regex.IsMatch(dto.Password, @"[\W_]"))
+            errors.Add("Şifre en az 1 özel karakter içermelidir.");
+    }
+
+    if (errors.Any())
     {
         return BadRequest(new
         {
-            message = "Sadece @gmail.com, @hotmail.com veya @outlook.com kullanılabilir."
+            message = "Lütfen hataları düzeltin.",
+            errors
         });
     }
-
     var existingUser = await _userRepository.GetByUsernameAsync(dto.Username);
 
     if (existingUser != null)

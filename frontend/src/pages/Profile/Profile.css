@@ -16,12 +16,53 @@
     box-shadow:0 8px 20px rgba(0,0,0,.12);
 }
 
+.profile-photo{
+    position:relative;
+    width:140px;
+    margin:0 auto;
+}
+
+.camera-btn{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    border: 2px solid white;
+
+    background: #6c3fc5;
+    color: white;
+
+    font-size: 20px;
+    line-height: 1;
+
+    cursor: pointer;
+    z-index: 999;
+}
+
+.camera-btn svg{
+    width:18px;
+    height:18px;
+}
+
 .profile-photo img{
     width:140px;
     height:140px;
     border-radius:50%;
     object-fit:cover;
     border:5px solid #6c3fc5;
+    display:block;
+}
+
+.camera-btn:hover{
+    background:#5630a3;
 }
 
 .profile-card h2{
