@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { FaCamera } from "react-icons/fa";
+import { FaCamera, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import "./Profile.css";
 
@@ -134,6 +134,23 @@ function Profile() {
     console.error(error);
     alert("Fotoğraf yüklenemedi.");
   }
+}
+
+const deletePhoto = async () => {
+  try {
+    await axios.delete(
+      `http://localhost:5070/api/User/${user.id}/photo`
+    );
+
+    setUser({
+      ...user,
+      imageUrl: null,
+    });
+
+  } catch (error) {
+    console.error(error);
+    alert("Fotoğraf silinemedi.");
+  }
 };
 
   if (!user) 
@@ -165,6 +182,15 @@ function Profile() {
       type="button"
       >
       <FaCamera />
+    </button>
+
+    <button
+    className="delete-photo-btn"
+    onClick={deletePhoto}
+    type="button"
+    title="Fotoğrafı Kaldır"
+    >
+    <FaTrash />
     </button>
 
       <input

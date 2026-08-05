@@ -44,7 +44,7 @@ function Register() {
     );
   }
 }
-  };
+};
 
   return (
 
@@ -159,5 +159,4 @@ function Register() {
     </div>
   );
 }
-
 export default Register;

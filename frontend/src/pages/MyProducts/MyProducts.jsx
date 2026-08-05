@@ -11,6 +11,7 @@ function MyProducts() {
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const [columns, setColumns] = useState(4);
   const [editingId, setEditingId] = useState(null);
@@ -34,14 +35,35 @@ function MyProducts() {
 
   const addProduct = async () => {
     try {
-      await axios.post("http://localhost:5070/api/Product", {
-        sellerId: Number(localStorage.getItem("userId")),
-        name,
-        description,
-        price: Number(price),
-        stock: Number(stock),
-        imageUrl,
-      });
+      const response = await axios.post(
+  "http://localhost:5070/api/Product",
+  {
+    sellerId: Number(localStorage.getItem("userId")),
+    name,
+    description,
+    price: Number(price),
+    stock: Number(stock),
+    imageUrl: null,
+  }
+);
+
+const productId = response.data.productId;
+
+if (selectedImage) {
+  const formData = new FormData();
+
+  formData.append("Image", selectedImage);
+
+  await axios.post(
+    `http://localhost:5070/api/Product/${productId}/upload-photo`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+}
 
       alert("Ürün başarıyla eklendi.");
 
@@ -50,6 +72,7 @@ function MyProducts() {
       setPrice("");
       setStock("");
       setImageUrl("");
+      setSelectedImage(null);
 
       setShowForm(false);
       setEditingId(null);
@@ -89,16 +112,32 @@ function MyProducts() {
 const updateProduct = async () => {
   try {
     await axios.put(
-      `http://localhost:5070/api/Product/${editingId}`,
-      {
-        sellerId: Number(localStorage.getItem("userId")),
-        name,
-        description,
-        price: Number(price),
-        stock: Number(stock),
-        imageUrl,
-      }
-    );
+  `http://localhost:5070/api/Product/${editingId}`,
+  {
+    sellerId: Number(localStorage.getItem("userId")),
+    name,
+    description,
+    price: Number(price),
+    stock: Number(stock),
+    imageUrl: null,
+  }
+);
+
+    if (selectedImage) {
+  const formData = new FormData();
+
+  formData.append("Image", selectedImage);
+
+  await axios.post(
+    `http://localhost:5070/api/Product/${editingId}/upload-photo`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+}
 
     alert("Ürün güncellendi.");
 
@@ -109,7 +148,7 @@ const updateProduct = async () => {
     setPrice("");
     setStock("");
     setImageUrl("");
-
+    setSelectedImage(null);
     setShowForm(false);
     setEditingId(null);
 
@@ -163,32 +202,27 @@ const updateProduct = async () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-
           <textarea
             placeholder="Açıklama"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-
           <input
             type="number"
             placeholder="Fiyat"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
           />
-
           <input
             type="number"
             placeholder="Stok"
             value={stock}
             onChange={(e) => setStock(e.target.value)}
           />
-
           <input
-            type="text"
-            placeholder="Resim URL"
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
+            type="file"
+            accept="image/*"
+            onChange={(e) => setSelectedImage(e.target.files[0])}
           />
             <button
             className="save-btn"
@@ -211,9 +245,9 @@ const updateProduct = async () => {
           {products.map((product) => (
             <div className="product-card" key={product.id}>
               <img
-                src={
-                  product.imageUrl ||
-                  "https://placehold.co/300x220?text=Ürün"
+                src={product.imageUrl
+                ? "http://localhost:5070" + product.imageUrl
+                : "https://placehold.co/300x220?text=Ürün"
                 }
                 alt={product.name}
               />

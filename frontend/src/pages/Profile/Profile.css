@@ -23,33 +23,77 @@
 }
 
 .camera-btn{
-    position: absolute;
-    bottom: 0;
-    right: 0;
+    position:absolute;
+    bottom:-4px;
+    right:-4px;
 
-    width: 42px;
-    height: 42px;
+    width:40px;
+    height:40px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-    border-radius: 50%;
-    border: 2px solid white;
+    border:none;
+    border-radius:50%;
 
-    background: #6c3fc5;
-    color: white;
+    background:#6c3fc5;
+    color:white;
 
-    font-size: 20px;
-    line-height: 1;
+    cursor:pointer;
 
-    cursor: pointer;
-    z-index: 999;
+    box-shadow:0 2px 8px rgba(0,0,0,.25);
+
+    z-index:10;
+
+    transition:.2s;
+}
+
+.camera-btn:hover{
+    background:#5630a3;
+    transform:scale(1.08);
 }
 
 .camera-btn svg{
-    width:18px;
-    height:18px;
+    width:16px;
+    height:16px;
+}
+
+.delete-photo-btn{
+    position:absolute;
+    bottom:-4px;
+    left:-4px;
+
+    width:40px;
+    height:40px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border:none;
+    border-radius:50%;
+
+    background:#dc3545;
+    color:white;
+
+    cursor:pointer;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.25);
+
+    z-index:10;
+
+    transition:.2s;
+}
+
+.delete-photo-btn:hover{
+    background:#bb2d3b;
+    transform:scale(1.08);
+}
+
+.delete-photo-btn svg{
+    width:16px;
+    height:16px;
 }
 
 .profile-photo img{
@@ -64,6 +108,8 @@
 .camera-btn:hover{
     background:#5630a3;
 }
+
+
 
 .profile-card h2{
     margin-top:20px;

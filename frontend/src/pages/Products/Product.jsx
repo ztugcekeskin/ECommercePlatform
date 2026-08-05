@@ -15,7 +15,25 @@ function Product() {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  },[])
+  
+  
+    const addToCart = async (productId) => {
+  try {
+    const customerId = localStorage.getItem("userId");
+
+    await axios.post("http://localhost:5070/api/Cart", {
+      customerId: Number(customerId),
+      productId: productId,
+      quantity: 1,
+    });
+
+    alert("Ürün sepete eklendi.");
+  } catch (error) {
+    console.error(error);
+    alert("Ürün sepete eklenemedi.");
+  }
+};
 
   return (
     <div className="products-page">
@@ -51,11 +69,10 @@ function Product() {
           {products.map((product) => (
             <div className="product-card" key={product.id}>
               <img
-                src={
-                  product.imageUrl ||
-                  "https://placehold.co/300x220?text=Ürün"
-                }
-                alt={product.name}
+              src={product.imageUrl
+              ? "http://localhost:5070" + product.imageUrl: "https://placehold.co/300x220?text=Ürün"
+              }
+              alt={product.name}
               />
 
               <div className="product-info">
@@ -72,11 +89,10 @@ function Product() {
                 <button
                   className="cart-btn"
                   disabled={product.stock === 0}
-                  onClick={() => {}}
-                >
-                  {product.stock === 0
-                    ? "Stokta Yok"
-                    : "🛒 Sepete Ekle"}
+                  onClick={() => addToCart(product.id)}     
+               >
+                  {product.stock === 0 ? "Stokta Yok"
+                  : "🛒 Sepete Ekle"}
                 </button>
               </div>
             </div>

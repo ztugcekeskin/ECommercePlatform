@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using WebAPI.DTOs;
 using WebAPI.Models;
 using WebAPI.Repositories.Interfaces;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace WebAPI.Controllers;
 
@@ -49,7 +51,8 @@ public class ProductController : ControllerBase
 
         return Ok(new
         {
-            message = "Ürün başarıyla eklendi."
+            message = "Ürün başarıyla eklendi.",
+            productId = product.Id
         } );
     }
     [HttpDelete("{id}")]
@@ -86,5 +89,62 @@ public class ProductController : ControllerBase
 
         return Ok(new { message = "Ürün güncellendi." });
     }
+
+    [HttpPost("{id}/upload-photo")]
+public async Task<IActionResult> UploadPhoto(
+    int id,
+    [FromForm] UploadProductPhotoDto dto)
+{
+    var product = await _productRepository.GetByIdAsync(id);
+
+    if (product == null)
+    {
+        return NotFound(new
+        {
+            message = "Ürün bulunamadı."
+        });
+    }
+
+    if (dto.Image == null || dto.Image.Length == 0)
+    {
+        return BadRequest(new
+        {
+            message = "Lütfen bir fotoğraf seçin."
+        });
+    }
+
+    var uploadsFolder = Path.Combine(
+        Directory.GetCurrentDirectory(),
+        "Uploads",
+        "Products");
+
+    if (!Directory.Exists(uploadsFolder))
+    {
+        Directory.CreateDirectory(uploadsFolder);
+    }
+
+    var fileName =
+        Guid.NewGuid().ToString() +
+        Path.GetExtension(dto.Image.FileName);
+
+    var filePath =
+        Path.Combine(uploadsFolder, fileName);
+
+    using (var stream = new FileStream(filePath, FileMode.Create))
+    {
+        await dto.Image.CopyToAsync(stream);
+    }
+
+    product.ImageUrl = "/uploads/Products/" + fileName;
+
+    await _productRepository.Update(product);
+    await _productRepository.SaveChangesAsync();
+
+    return Ok(new
+    {
+        message = "Ürün fotoğrafı yüklendi.",
+        imageUrl = product.ImageUrl
+    });
+}
 
 }

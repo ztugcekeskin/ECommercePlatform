@@ -6,6 +6,7 @@ import Register from "./pages/Register/Register";
 import Profile from "./pages/Profile/Profile";
 import MyProducts from "./pages/MyProducts/MyProducts";
 import Footer from "./components/Footer/Footer";
+import Cart from "./pages/Cart/Cart";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/my-products" element={<MyProducts />} />
+        <Route path="/cart" element={<Cart />} />
       </Routes>
 
       <Footer />

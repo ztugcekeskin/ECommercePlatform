@@ -125,7 +125,6 @@ public class UserController : ControllerBase
     });
     }
 
-
     [HttpPost("{id}/upload-photo")]
     public async Task<IActionResult> UploadPhoto(
     int id,
@@ -173,9 +172,34 @@ public class UserController : ControllerBase
     await _userRepository.Update(user);
 
   return Ok(new
-{
+    {
     message = "Fotoğraf başarıyla yüklendi.",
     imageUrl = user.ImageUrl
-});
+    });
     }
+
+    [HttpDelete("{id}/photo")]
+public async Task<IActionResult> DeletePhoto(int id)
+{
+    var user = await _userRepository.GetByIdAsync(id);
+
+    if (user == null)
+    {
+        return NotFound(new
+        {
+            message = "Kullanıcı bulunamadı."
+        });
+    }
+
+    user.ImageUrl = null;
+
+    await _userRepository.Update(user);
+
+    return Ok(new
+    {
+        message = "Profil fotoğrafı silindi."
+    });
+}
+
+
 }
