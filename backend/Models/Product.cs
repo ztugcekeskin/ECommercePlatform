@@ -28,4 +28,5 @@ public class Product
     [Column("ImageUrl")]
     public string? ImageUrl { get; set; }
     public List<CartItem> CartItems { get; set; } = new();
+    public List<OrderItem> OrderItems { get; set; } = new();
 }

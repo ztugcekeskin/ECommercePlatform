@@ -24,4 +24,5 @@ public class User
     public string Role { get; set; } = "Customer";
 
     public string? ImageUrl { get; set; }
+    public List<Order> Orders { get; set; } = new();
 }

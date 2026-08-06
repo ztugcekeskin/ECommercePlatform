@@ -49,7 +49,6 @@ public class CartController : ControllerBase
 
             await _cartRepository.AddCartItemAsync(cartItem);
         }
-
         await _cartRepository.SaveChangesAsync();
 
         return Ok(new
@@ -59,7 +58,7 @@ public class CartController : ControllerBase
     }
 
     [HttpGet("{customerId}")]
-public async Task<IActionResult> GetCart(int customerId)
+    public async Task<IActionResult> GetCart(int customerId)
 {
     var cart = await _cartRepository.GetCartWithProductsAsync(customerId);
 
@@ -110,7 +109,7 @@ public async Task<IActionResult> GetCart(int customerId)
 }
 
     [HttpPut("decrease/{cartItemId}")]
-public async Task<IActionResult> DecreaseQuantity(int cartItemId)
+    public async Task<IActionResult> DecreaseQuantity(int cartItemId)
 {
     var cartItem = await _cartRepository.GetCartItemByIdAsync(cartItemId);
 

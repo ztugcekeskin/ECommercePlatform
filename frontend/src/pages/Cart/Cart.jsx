@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Cart.css";
 import axios from "axios";
 
 function Cart() {
+    const navigate = useNavigate();
 
     const [cartItems, setCartItems] = useState([]);
 
@@ -100,8 +102,11 @@ const decreaseQuantity = async (cartItemId) => {
         <div className="cart-total">
           <h2>Genel Toplam: {totalPrice.toFixed(2)} TL</h2>
 
-          <button className="checkout-btn">
-            Siparişi Tamamla
+          <button
+          className="checkout-btn"
+          onClick={() => navigate("/payment")}
+          >
+            Ödemeye Geç
           </button>
         </div>
       </>

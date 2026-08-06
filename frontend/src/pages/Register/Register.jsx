@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
 import "./Register.css";
 
 function Register() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [age, setAge] = useState("");
@@ -30,10 +32,12 @@ function Register() {
         user
       );
       console.log(response.data);
-      alert(`Kayıt başarılı: ${response.data.message}`);
+      alert(`Kayıt başarılı. Giriş yapabilirsiniz: ${response.data.message}`);
+      navigate("/login");
     } 
     catch (error) {
   console.error("Kayıt hatası:", error);
+  
 
   if (error.response?.data?.errors) {
     alert(error.response.data.errors.join("\n"));

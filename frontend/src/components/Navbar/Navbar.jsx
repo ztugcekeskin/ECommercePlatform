@@ -1,5 +1,6 @@
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
+import {FaHome,FaShoppingCart,FaBox,FaUser,FaSignInAlt,FaUserPlus} from "react-icons/fa";
 import "./Navbar.css";
 
 function Navbar() {
@@ -16,9 +17,9 @@ function Navbar() {
     <header className="navbar">
 
       <div className="logo">
-        <Link to="/">
+        <NavLink to="/">
           <img src={logo} alt="Logo" />
-        </Link>
+        </NavLink>
       </div>
 
       <div className="search">
@@ -32,29 +33,47 @@ function Navbar() {
 
   {!role && (
     <>
-      <Link to="/login" className="login-link">
+      <NavLink to="/login" className="login-link">
         Giriş Yap
-      </Link>
+      </NavLink>
 
-      <Link to="/register" className="register-link">
+      <NavLink to="/register" className="register-link">
         Kayıt Ol
-      </Link>
+      </NavLink>
     </>
   )}
 
   {role === "Customer" && (
     <>
-      <Link to="/cart" className="cart-link">
-        🛒 Sepet
-      </Link>
+      <NavLink
+  to="/cart"
+  className={({ isActive }) =>
+    isActive ? "login-link active-link" : "login-link"
+  }
+>
+  <FaShoppingCart className="nav-icon" />
+  Sepetim
+</NavLink>
 
-      <Link to="/orders" className="login-link">
-        Siparişlerim
-      </Link>
+      <NavLink
+  to="/orders"
+  className={({ isActive }) =>
+    isActive ? "login-link active-link" : "login-link"
+  }
+>
+  <FaBox className="nav-icon" />
+  Siparişlerim
+</NavLink>
 
-      <Link to="/profile" className="login-link">
-        Profil
-      </Link>
+      <NavLink
+  to="/profile"
+  className={({ isActive }) =>
+    isActive ? "login-link active-link" : "login-link"
+  }
+>
+  <FaUser className="nav-icon" />
+  Profilim
+</NavLink>
 
       <button 
       className="logout-btn"
@@ -67,25 +86,25 @@ function Navbar() {
 
   {role === "Seller" && (
     <>
-      <Link to="/my-products" className="login-link">
+      <NavLink to="/my-products" className="login-link">
         Ürünlerim
-      </Link>
+      </NavLink>
 
-      <Link to="/seller-orders" className="login-link">
+      <NavLink to="/seller-orders" className="login-link">
         Siparişler
-      </Link>
+      </NavLink>
 
-      <Link to="/chat" className="login-link">
+      <NavLink to="/chat" className="login-link">
         Mesajlar
-      </Link>
+      </NavLink>
 
-      <Link to="/reviews" className="login-link">
+      <NavLink to="/reviews" className="login-link">
         Yorumlar
-      </Link>
+      </NavLink>
 
-      <Link to="/profile" className="login-link">
+      <NavLink to="/profile" className="login-link">
         Profil
-      </Link>
+      </NavLink>
 
       <button 
       className="logout-btn"
