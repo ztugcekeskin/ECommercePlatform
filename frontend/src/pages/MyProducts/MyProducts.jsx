@@ -1,26 +1,29 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import "./MyProducts.css";
 
 function MyProducts() {
   const [products, setProducts] = useState([]);
   const [showForm, setShowForm] = useState(false);
-
+  const [searchParams] = useSearchParams();
+  const searchTerm = searchParams.get("search") || "";  
+  console.log("Search:", searchTerm);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
-
+  const [category, setCategory] = useState("");
   const [columns, setColumns] = useState(4);
   const [editingId, setEditingId] = useState(null);
 
   const getProducts = () => {
     const sellerId = localStorage.getItem("userId");
-
-    axios
-      .get(`http://localhost:5070/api/Product/seller/${sellerId}`)
+    axios.get(
+    `http://localhost:5070/api/Product/seller/${sellerId}?search=${encodeURIComponent(searchTerm)}`
+      )
       .then((response) => {
         setProducts(response.data);
       })
@@ -31,7 +34,7 @@ function MyProducts() {
 
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [searchTerm]);
 
   const addProduct = async () => {
     try {
@@ -44,12 +47,14 @@ function MyProducts() {
     price: Number(price),
     stock: Number(stock),
     imageUrl: null,
+    category,
   }
 );
 
-const productId = response.data.productId;
-
-if (selectedImage) {
+  const productId = response.data.productId;
+  
+  if (selectedImage) {
+  
   const formData = new FormData();
 
   formData.append("Image", selectedImage);
@@ -64,7 +69,6 @@ if (selectedImage) {
     }
   );
 }
-
       alert("Ürün başarıyla eklendi.");
 
       setName("");
@@ -73,6 +77,7 @@ if (selectedImage) {
       setStock("");
       setImageUrl("");
       setSelectedImage(null);
+      setCategory("");
 
       setShowForm(false);
       setEditingId(null);
@@ -109,7 +114,7 @@ if (selectedImage) {
 
 };
 
-const updateProduct = async () => {
+  const updateProduct = async () => {
   try {
     await axios.put(
   `http://localhost:5070/api/Product/${editingId}`,
@@ -120,10 +125,10 @@ const updateProduct = async () => {
     price: Number(price),
     stock: Number(stock),
     imageUrl: null,
+    category,
   }
 );
-
-    if (selectedImage) {
+  if (selectedImage) {
   const formData = new FormData();
 
   formData.append("Image", selectedImage);
@@ -138,11 +143,8 @@ const updateProduct = async () => {
     }
   );
 }
-
     alert("Ürün güncellendi.");
-
     setEditingId(null);
-
     setName("");
     setDescription("");
     setPrice("");
@@ -151,7 +153,6 @@ const updateProduct = async () => {
     setSelectedImage(null);
     setShowForm(false);
     setEditingId(null);
-
     getProducts();
   } 
   catch (error) {
@@ -176,18 +177,17 @@ const updateProduct = async () => {
       </div>
 
       <button
-  className="add-product-btn"
-  onClick={() => {
-
-    if (!showForm) {
+      className="add-product-btn"
+      onClick={() => {
+      if (!showForm) {
       setEditingId(null);
       setName("");
       setDescription("");
       setPrice("");
       setStock("");
       setImageUrl("");
+      setCategory("");
     }
-
     setShowForm(!showForm);
   }}
 >
@@ -219,6 +219,19 @@ const updateProduct = async () => {
             value={stock}
             onChange={(e) => setStock(e.target.value)}
           />
+          <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          >
+          <option value="">Kategori seçin</option>
+          <option value="Elektronik">Elektronik</option>
+          <option value="Ev & Yaşam">Ev & Yaşam</option>
+          <option value="Moda">Moda</option>
+          <option value="Spor">Spor</option>
+          <option value="Kozmetik">Kozmetik</option>
+          <option value="Kitap">Kitap</option>
+          </select>
+
           <input
             type="file"
             accept="image/*"
@@ -262,19 +275,17 @@ const updateProduct = async () => {
                 <p className="stock">Stok: {product.stock}</p>
 
                 <div className="buttons">
-               <button
+                <button
                 className="edit-btn"
                 onClick={() => {
-               
                 setEditingId(product.id);
-
                 setShowForm(true);
-
                 setName(product.name);
                 setDescription(product.description);
                 setPrice(product.price);
                 setStock(product.stock);
                 setImageUrl(product.imageUrl);
+                setCategory(product.category);
 
                   window.scrollTo({
                   top: 0,
@@ -284,7 +295,6 @@ const updateProduct = async () => {
            >
                     Düzenle
                   </button>
-
                   <button className="delete-btn" 
                   onClick={() => deleteProduct(product.id)}>
                     Sil
@@ -297,6 +307,5 @@ const updateProduct = async () => {
       )}
     </div>
   );
-
 }
 export default MyProducts;

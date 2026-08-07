@@ -3,7 +3,6 @@
     background:#301f37;
     color:white;
 }
-
 .footer-container{
     max-width:1400px;
     margin:auto;
@@ -12,17 +11,14 @@
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
     gap:40px;
 }
-
 .footer-section h3,
 .footer-section h4{
     margin-bottom:15px;
 }
-
 .footer-section p{
     color:#d1d5db;
     line-height:1.6;
 }
-
 .footer-section a{
     display:block;
     color:#d1d5db;
@@ -30,11 +26,9 @@
     margin-bottom:10px;
     transition:.3s;
 }
-
 .footer-section a:hover{
     color:#7c3aed;
 }
-
 .footer-bottom{
     text-align:center;
     padding:20px;

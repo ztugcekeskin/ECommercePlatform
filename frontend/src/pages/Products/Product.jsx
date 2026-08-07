@@ -1,21 +1,26 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import "./Product.css";
 
 function Product() {
   const [products, setProducts] = useState([]);
   const [columns, setColumns] = useState(4);
+  const [searchParams] = useSearchParams();
+const searchTerm = searchParams.get("search") || "";
 
   useEffect(() => {
     axios
-      .get("http://localhost:5070/api/Product")
+    .get(
+    `http://localhost:5070/api/Product?search=${encodeURIComponent(searchTerm)}`
+  )
       .then((response) => {
         setProducts(response.data);
       })
       .catch((error) => {
         console.error(error);
       });
-  },[])
+  },[searchTerm]);
   
   
     const addToCart = async (productId) => {

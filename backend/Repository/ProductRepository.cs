@@ -46,5 +46,22 @@ public class ProductRepository : IProductRepository
     {
         _context.Products.Update(product);
     }
+    public async Task<List<Product>> SearchAsync(string search)
+    {
+    return await _context.Products
+        .Where(p => EF.Functions.ILike(p.Name, $"%{search}%"))
+        .ToListAsync();
+    }
+
+        public async Task<List<Product>> SearchBySellerAsync(
+    int sellerId,
+    string search)
+{
+    return await _context.Products
+        .Where(p =>
+            p.SellerId == sellerId &&
+            EF.Functions.ILike(p.Name, $"%{search}%"))
+        .ToListAsync();
+}
 
 }

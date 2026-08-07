@@ -9,24 +9,20 @@ public class Product
     [Key]
     [Column("Id")]
     public int Id { get; set; }
-
     [Column("SellerId")]
     public int SellerId { get; set; }
-
     [Column("Name")]
     public string Name { get; set; } = "";
-
     [Column("Description")]
     public string Description { get; set; } = "";
-
     [Column("Price")]
     public decimal Price { get; set; }
-
     [Column("Stock")]
     public int Stock { get; set; }
-
     [Column("ImageUrl")]
     public string? ImageUrl { get; set; }
+    [Column("Category")]
+    public string? Category { get; set; }
     public List<CartItem> CartItems { get; set; } = new();
     public List<OrderItem> OrderItems { get; set; } = new();
 }

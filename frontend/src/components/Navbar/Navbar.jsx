@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import logo from "../../assets/logo.png";
 import {FaHome,FaShoppingCart,FaBox,FaUser,FaSignInAlt,FaUserPlus} from "react-icons/fa";
 import "./Navbar.css";
@@ -13,6 +14,19 @@ function Navbar() {
     navigate("/login");
   };
 
+  const [search, setSearch] = useState("");
+  const handleSearch = (e) => {
+  if (e.key === "Enter") {
+    const encodedSearch = encodeURIComponent(search);
+
+    if (role === "Seller") {
+      navigate(`/my-products?search=${encodedSearch}`);
+    } else {
+      navigate(`/?search=${encodedSearch}`);
+    }
+  }
+};
+
   return (
     <header className="navbar">
 
@@ -26,6 +40,9 @@ function Navbar() {
         <input
           type="text"
           placeholder="Ürün ara..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={handleSearch}
         />
       </div>
 
@@ -45,35 +62,35 @@ function Navbar() {
 
   {role === "Customer" && (
     <>
-      <NavLink
+    <NavLink
   to="/cart"
   className={({ isActive }) =>
     isActive ? "login-link active-link" : "login-link"
   }
->
-  <FaShoppingCart className="nav-icon" />
-  Sepetim
-</NavLink>
+  >
+    <FaShoppingCart className="nav-icon" />
+    Sepetim
+    </NavLink>
 
-      <NavLink
+    <NavLink
   to="/orders"
   className={({ isActive }) =>
     isActive ? "login-link active-link" : "login-link"
   }
->
-  <FaBox className="nav-icon" />
-  Siparişlerim
-</NavLink>
+  >
+    <FaBox className="nav-icon" />
+    Siparişlerim
+    </NavLink>
 
-      <NavLink
+    <NavLink
   to="/profile"
   className={({ isActive }) =>
     isActive ? "login-link active-link" : "login-link"
   }
->
-  <FaUser className="nav-icon" />
-  Profilim
-</NavLink>
+  >
+    <FaUser className="nav-icon" />
+    Profilim
+    </NavLink>
 
       <button 
       className="logout-btn"
@@ -114,9 +131,7 @@ function Navbar() {
       </button>
     </>
   )}
-
 </div>
-
     </header>
   );
 }

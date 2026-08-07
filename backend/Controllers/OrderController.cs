@@ -15,9 +15,10 @@ public class OrderController : ControllerBase
     {
         _orderRepository = orderRepository;
     }
+    
     [HttpPost("checkout")]
-public async Task<IActionResult> Checkout([FromBody] CheckoutDto dto)
-{
+    public async Task<IActionResult> Checkout([FromBody] CheckoutDto dto)
+    {
     var cart = await _orderRepository.GetCartByCustomerIdAsync(dto.CustomerId);
 
     if (cart == null || !cart.CartItems.Any())
@@ -39,20 +40,20 @@ public async Task<IActionResult> Checkout([FromBody] CheckoutDto dto)
     await _orderRepository.SaveChangesAsync();
     
     foreach (var item in cart.CartItems)
-{
+    {
     var orderItem = new OrderItem
-{
+    {
     OrderId = order.Id,
     ProductId = item.ProductId,
     Quantity = item.Quantity,
     UnitPrice = item.Product.Price
-};
+    };
     await _orderRepository.AddOrderItemAsync(orderItem);    
     
     item.Product.Stock -= item.Quantity;
 
     await _orderRepository.UpdateProductAsync(item.Product);
-}
+    }   
     await _orderRepository.SaveChangesAsync();
 
     await _orderRepository.ClearCartAsync(cart);
@@ -60,15 +61,15 @@ public async Task<IActionResult> Checkout([FromBody] CheckoutDto dto)
     await _orderRepository.SaveChangesAsync();
 
     return Ok(new
-{
+    {
     message = "Sipariş başarıyla oluşturuldu.",
     orderId = order.Id
-});
-}
+    });
+    }
 
     [HttpGet("{customerId}")]
-public async Task<IActionResult> GetOrders(int customerId)
-{
+    public async Task<IActionResult> GetOrders(int customerId)
+    {
     var orders = await _orderRepository.GetOrdersByCustomerIdAsync(customerId);
 
     var result = orders.Select(order => new
@@ -95,5 +96,33 @@ public async Task<IActionResult> GetOrders(int customerId)
     });
 
     return Ok(result);
-}
+    }
+
+    [HttpGet("seller/{sellerId}")]
+    public async Task<IActionResult> GetSellerOrders(int sellerId)
+    {
+    var orderItems = await _orderRepository
+        .GetOrderItemsBySellerIdAsync(sellerId);
+
+    var result = orderItems.Select(item => new
+    {
+        orderId = item.OrderId,
+        orderDate = item.Order.OrderDate,
+        status = item.Order.Status,
+
+        product = new
+        {
+            id = item.Product.Id,
+            name = item.Product.Name,
+            imageUrl = item.Product.ImageUrl
+        },
+
+        quantity = item.Quantity,
+        unitPrice = item.UnitPrice,
+        totalPrice = item.UnitPrice * item.Quantity
+    });
+
+    return Ok(result);
+    }
+
 }

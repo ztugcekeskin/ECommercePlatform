@@ -19,20 +19,42 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllProducts()
+    public async Task<IActionResult> GetAllProducts(string? search)
     {
-        var products = await _productRepository.GetAllAsync();
+    if (!string.IsNullOrWhiteSpace(search))
+    {
+        var searchedProducts =
+            await _productRepository.SearchAsync(search);
 
-        return Ok(products);
+        return Ok(searchedProducts);
+    }
+
+    var products = await _productRepository.GetAllAsync();
+
+    return Ok(products);
     }
 
     [HttpGet("seller/{sellerId}")]
-    public async Task<IActionResult> GetSellerProducts(int sellerId)
+    public async Task<IActionResult> GetSellerProducts(
+    int sellerId,
+    string? search)
     {
-        var products = await _productRepository.GetBySellerIdAsync(sellerId);
+    if (!string.IsNullOrWhiteSpace(search))
+    {
+        var products =
+            await _productRepository.SearchBySellerAsync(
+                sellerId,
+                search);
 
         return Ok(products);
     }
+
+    var sellerProducts =
+        await _productRepository.GetBySellerIdAsync(sellerId);
+
+    return Ok(sellerProducts);
+    }
+
     [HttpPost]
     public async Task<IActionResult> AddProduct([FromBody] ProductDto dto)
     {
@@ -43,7 +65,8 @@ public class ProductController : ControllerBase
             Description = dto.Description,
             Price = dto.Price,
             Stock = dto.Stock,
-            ImageUrl = dto.ImageUrl
+            ImageUrl = dto.ImageUrl,
+            Category = dto.Category
         };
 
         await _productRepository.AddAsync(product);
@@ -55,13 +78,15 @@ public class ProductController : ControllerBase
             productId = product.Id
         } );
     }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
     var product = await _productRepository.GetByIdAsync(id);
 
     if (product == null)
-        return NotFound(new { message = "Ürün bulunamadı." });
+        return NotFound(new 
+        { message = "Ürün bulunamadı." });
 
     await _productRepository.Delete(product);
     await _productRepository.SaveChangesAsync();
@@ -75,7 +100,8 @@ public class ProductController : ControllerBase
         var product = await _productRepository.GetByIdAsync(id);
 
         if (product == null)
-            return NotFound(new { message = "Ürün bulunamadı." });
+            return NotFound(new 
+            { message = "Ürün bulunamadı." });
 
         product.SellerId = dto.SellerId;
         product.Name = dto.Name;
@@ -83,18 +109,19 @@ public class ProductController : ControllerBase
         product.Price = dto.Price;
         product.Stock = dto.Stock;
         product.ImageUrl = dto.ImageUrl;
-
+        product.Category = dto.Category;
         await _productRepository.Update(product);
         await _productRepository.SaveChangesAsync();
 
-        return Ok(new { message = "Ürün güncellendi." });
+        return Ok(new 
+        { message = "Ürün güncellendi." });
     }
 
     [HttpPost("{id}/upload-photo")]
-public async Task<IActionResult> UploadPhoto(
+    public async Task<IActionResult> UploadPhoto(
     int id,
     [FromForm] UploadProductPhotoDto dto)
-{
+    {
     var product = await _productRepository.GetByIdAsync(id);
 
     if (product == null)

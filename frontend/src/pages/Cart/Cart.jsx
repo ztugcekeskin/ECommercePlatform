@@ -59,7 +59,7 @@ const decreaseQuantity = async (cartItemId) => {
     <h2>Sepetim</h2>
 
     {cartItems.length === 0 ? (
-      <p>Sepetiniz boş.</p>
+      <p>Şu anda sepette ürün bulunmamaktadır.</p>
     ) : (
       <>
         {cartItems.map((item) => (

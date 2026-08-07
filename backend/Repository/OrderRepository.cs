@@ -72,4 +72,13 @@ public async Task<List<Order>> GetOrdersByCustomerIdAsync(int customerId)
         .OrderByDescending(o => o.OrderDate)
         .ToListAsync();
 }
+public async Task<List<OrderItem>> GetOrderItemsBySellerIdAsync(int sellerId)
+{
+    return await _context.OrderItems
+        .Include(oi => oi.Product)
+        .Include(oi => oi.Order)
+        .Where(oi => oi.Product.SellerId == sellerId)
+        .OrderByDescending(oi => oi.Order.OrderDate)
+        .ToListAsync();
+}
 }

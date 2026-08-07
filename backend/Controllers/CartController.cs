@@ -59,7 +59,7 @@ public class CartController : ControllerBase
 
     [HttpGet("{customerId}")]
     public async Task<IActionResult> GetCart(int customerId)
-{
+    {
     var cart = await _cartRepository.GetCartWithProductsAsync(customerId);
 
     if (cart == null)
@@ -84,10 +84,11 @@ public class CartController : ControllerBase
     });
 
     return Ok(result);
-}
+    }
+    
     [HttpPut("increase/{cartItemId}")]
     public async Task<IActionResult> IncreaseQuantity(int cartItemId)
-{
+    {
     var cartItem = await _cartRepository.GetCartItemByIdAsync(cartItemId);
 
     if (cartItem == null)
@@ -106,11 +107,11 @@ public class CartController : ControllerBase
     {
         message = "Adet artırıldı."
     });
-}
+    }
 
     [HttpPut("decrease/{cartItemId}")]
     public async Task<IActionResult> DecreaseQuantity(int cartItemId)
-{
+    {
     var cartItem = await _cartRepository.GetCartItemByIdAsync(cartItemId);
 
     if (cartItem == null)

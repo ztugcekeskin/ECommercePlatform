@@ -86,16 +86,13 @@
     font-weight: 600;
     transition: .25s;
 }
-
 .save-btn:hover {
     background: #059669;
 }
-
 .products-grid {
     display: grid;
     gap: 25px;
 }
-
 .product-card {
     width: 100%;
     background: white;
@@ -104,53 +101,55 @@
     box-shadow: 0 5px 15px rgba(0,0,0,.10);
     transition: .3s;
 }
-
 .product-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 12px 25px rgba(0,0,0,.18);
 }
-
 .product-card img {
     width: 100%;
     height: 220px;
     object-fit: cover;
     background: #eee;
 }
-
 .product-info {
     padding: 20px;
 }
-
 .product-info h3 {
     margin: 0;
     font-size: 20px;
     color: #222;
 }
-
 .product-info p {
     margin-top: 10px;
     color: #666;
     line-height: 1.5;
 }
-
 .price {
     color: #7c3aed !important;
     font-size: 24px;
     font-weight: bold;
     margin-top: 18px;
 }
-
 .stock {
     margin-top: 10px;
     color: #777;
 }
-
+.product-form input,
+.product-form textarea,
+.product-form select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    font-size: 15px;
+    box-sizing: border-box;
+}
 .buttons {
     display: flex;
     gap: 10px;
     margin-top: 20px;
 }
-
 .edit-btn,
 .delete-btn {
     flex: 1;
@@ -162,23 +161,18 @@
     font-weight: 600;
     transition: .25s;
 }
-
 .edit-btn {
     background: #7c3aed;
 }
-
 .edit-btn:hover {
     background: #6d28d9;
 }
-
 .delete-btn {
     background: #ef4444;
 }
-
 .delete-btn:hover {
     background: #dc2626;
 }
-
 @media (max-width: 992px) {
     .my-products {
         padding: 25px;
@@ -190,7 +184,6 @@
         gap: 15px;
     }
 }
-
 @media (max-width: 768px) {
     .products-grid {
         grid-template-columns: 1fr !important;
