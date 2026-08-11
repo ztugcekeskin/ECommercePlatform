@@ -5,9 +5,7 @@ import axios from "axios";
 
 function Cart() {
     const navigate = useNavigate();
-
     const [cartItems, setCartItems] = useState([]);
-
     const getCart = () => {
     const customerId = localStorage.getItem("userId");
 
@@ -63,50 +61,46 @@ const decreaseQuantity = async (cartItemId) => {
     ) : (
       <>
         {cartItems.map((item) => (
-          <div className="cart-card" key={item.id}>
-            <img
-              src={
-                item.product.imageUrl
-                  ? "http://localhost:5070" + item.product.imageUrl
-                  : "https://placehold.co/150x150?text=Ürün"
-              }
-              alt={item.product.name}
+        <div className="cart-card" key={item.id}>
+        <img
+        src={
+          item.product.imageUrl
+          ? "http://localhost:5070" + item.product.imageUrl
+          : "https://placehold.co/150x150?text=Ürün"
+          }
+          alt={item.product.name}
             />
 
             <div className="cart-info">
-              <h3>{item.product.name}</h3>
+            <h3>{item.product.name}</h3>
+            <p>{item.product.description}</p>
+            <p>Fiyat: {item.product.price} TL</p>
 
-              <p>{item.product.description}</p>
+            <div className="quantity-box">
+            <button onClick={() => decreaseQuantity(item.id)}>
+              -
+            </button>
 
-              <p>Fiyat: {item.product.price} TL</p>
+            <span>{item.quantity}</span>
+            <button onClick={() => increaseQuantity(item.id)}>
+              +
+            </button>
+            </div>
 
-              <div className="quantity-box">
-                <button onClick={() => decreaseQuantity(item.id)}>
-                  -
-                </button>
-
-                <span>{item.quantity}</span>
-
-                <button onClick={() => increaseQuantity(item.id)}>
-                  +
-                </button>
-              </div>
-
-              <h4>
-                Toplam: {(item.product.price * item.quantity).toFixed(2)} TL
-              </h4>
+            <h4>
+            Toplam: {(item.product.price * item.quantity).toFixed(2)} TL
+            </h4>
             </div>
           </div>
         ))}
 
         <div className="cart-total">
-          <h2>Genel Toplam: {totalPrice.toFixed(2)} TL</h2>
-
-          <button
-          className="checkout-btn"
-          onClick={() => navigate("/payment")}
-          >
-            Ödemeye Geç
+        <h2>Genel Toplam: {totalPrice.toFixed(2)} TL</h2>
+        <button
+        className="checkout-btn"
+        onClick={() => navigate("/payment")}
+        >
+          Ödemeye Geç
           </button>
         </div>
       </>

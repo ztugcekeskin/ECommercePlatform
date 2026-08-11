@@ -64,4 +64,57 @@ public class ProductRepository : IProductRepository
         .ToListAsync();
 }
 
+    public async Task<List<Product>> GetByCategoryAsync(string category)
+{
+    return await _context.Products
+        .Where(p => p.Category == category)
+        .ToListAsync();
+}
+    public async Task<List<Product>> FilterAsync(
+    string? search,
+    string? category,
+    string? sort)
+    {
+    var query = _context.Products.AsQueryable();
+
+    if (!string.IsNullOrWhiteSpace(search))
+    {
+        query = query.Where(p =>
+            EF.Functions.ILike(p.Name, $"%{search}%"));
+    }
+
+    if (!string.IsNullOrWhiteSpace(category))
+    {
+        query = query.Where(p =>
+            p.Category == category);
+    }
+
+    switch (sort)
+    {
+        case "price_asc":
+            query = query.OrderBy(p => p.Price);
+            break;
+
+        case "price_desc":
+            query = query.OrderByDescending(p => p.Price);
+            break;
+
+        case "name_asc":
+            query = query.OrderBy(p => p.Name);
+            break;
+
+        case "name_desc":
+            query = query.OrderByDescending(p => p.Name);
+            break;
+    }
+
+    return await query.ToListAsync();
+    }
+    public async Task<Product?> GetProductWithSellerAsync(int id)
+    {
+    return await _context.Products
+        .Include(p => p.Seller)
+        .FirstOrDefaultAsync(p => p.Id == id);
+    }
+
 }

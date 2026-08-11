@@ -33,6 +33,60 @@ public class ProductController : ControllerBase
 
     return Ok(products);
     }
+    
+    [HttpGet("category/{category}")]
+    public async Task<IActionResult> GetProductsByCategory(string category)
+    {
+    var products = await _productRepository.GetByCategoryAsync(category);
+
+    return Ok(products);
+    }
+
+    [HttpGet("filter")]
+    public async Task<IActionResult> FilterProducts(
+    string? search,
+    string? category,
+    string? sort)
+    {
+    var products = await _productRepository.FilterAsync(
+        search,
+        category,
+        sort);
+
+    return Ok(products);
+    }
+
+    [HttpGet("{id}")]
+public async Task<IActionResult> GetProduct(int id)
+{
+    var product = await _productRepository.GetProductWithSellerAsync(id);
+
+    if (product == null)
+    {
+        return NotFound(new
+        {
+            message = "Ürün bulunamadı."
+        });
+    }
+
+    return Ok(new
+    {
+        id = product.Id,
+        name = product.Name,
+        description = product.Description,
+        price = product.Price,
+        stock = product.Stock,
+        imageUrl = product.ImageUrl,
+        category = product.Category,
+        seller = product.Seller == null
+            ? null
+            : new
+            {
+                id = product.Seller.Id,
+                username = product.Seller.Username
+            }
+    });
+}
 
     [HttpGet("seller/{sellerId}")]
     public async Task<IActionResult> GetSellerProducts(
@@ -140,6 +194,17 @@ public class ProductController : ControllerBase
         });
     }
 
+    var allowedExtensions = new[] { ".jpg", ".jpeg" };
+    var extension = Path.GetExtension(dto.Image.FileName).ToLowerInvariant();
+
+    if (!allowedExtensions.Contains(extension))
+    {
+    return BadRequest(new
+    {
+        message = "Sadece JPG ve JPEG formatındaki fotoğraflar kabul edilir."
+    });
+    }
+
     var uploadsFolder = Path.Combine(
         Directory.GetCurrentDirectory(),
         "Uploads",
@@ -150,12 +215,9 @@ public class ProductController : ControllerBase
         Directory.CreateDirectory(uploadsFolder);
     }
 
-    var fileName =
-        Guid.NewGuid().ToString() +
-        Path.GetExtension(dto.Image.FileName);
+    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(dto.Image.FileName);
 
-    var filePath =
-        Path.Combine(uploadsFolder, fileName);
+    var filePath =Path.Combine(uploadsFolder, fileName);
 
     using (var stream = new FileStream(filePath, FileMode.Create))
     {

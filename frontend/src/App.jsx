@@ -9,6 +9,7 @@ import Footer from "./components/Footer/Footer";
 import Cart from "./pages/Cart/Cart";
 import Payment from "./pages/Payment/Payment";
 import Orders from "./pages/Orders/Orders";
+import ProductDetail from "./pages/Products/ProductDetail";
 
 function App() {
   return (
@@ -23,9 +24,11 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/my-products" element={<MyProducts />} />
+        <Route path="/product/:id" element={<ProductDetail />}/>
         <Route path="/cart" element={<Cart />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/orders" element={<Orders />} />
+        <Route path="/seller-orders" element={<Orders />} />
       </Routes>
 
       <Footer />

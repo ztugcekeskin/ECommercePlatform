@@ -125,4 +125,27 @@ public class OrderController : ControllerBase
     return Ok(result);
     }
 
+    [HttpPut("{orderId}/approve")]
+    public async Task<IActionResult> ApproveOrder(int orderId)
+    {
+    var order = await _orderRepository.GetByIdAsync(orderId);
+
+    if (order == null)
+    {
+        return NotFound(new
+        {
+            message = "Sipariş bulunamadı."
+        });
+    }
+
+    order.Status = "Tamamlandı";
+
+    await _orderRepository.SaveChangesAsync();
+
+    return Ok(new
+    {
+        message = "Sipariş başarıyla tamamlandı."
+    });
+}
+    
 }

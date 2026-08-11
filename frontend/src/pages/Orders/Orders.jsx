@@ -7,6 +7,12 @@ function Orders() {
     const [orders, setOrders] = useState([]);
     const userId = localStorage.getItem("userId");
     const role = localStorage.getItem("role");
+    const [showReviewForm, setShowReviewForm] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [rating, setRating] = useState(5);
+    const [comment, setComment] = useState("");
+    console.log("Seller userId:", userId);
+    console.log("Role:", role);
 
     useEffect(() => {
 
@@ -52,7 +58,13 @@ function Orders() {
 
             <p>
             Durum:
-            <span className="status">
+            <span className={`status ${
+            order.status === "Tamamlandı"
+            ? "completed"
+            : order.status === "İptal Edildi"
+            ? "cancelled"
+            : "preparing"
+            }`}>
             {order.status}
             </span>
             </p>
@@ -87,6 +99,21 @@ function Orders() {
             {" "}
             {item.unitPrice} TL
             </p>
+
+            {order.status === "Tamamlandı" && (
+            <button
+            className="review-btn"
+            onClick={() => {
+            setSelectedProduct(item.product);
+            setRating(5);
+            setComment("");
+            setShowReviewForm(true);
+            }}
+            >
+            ⭐ Yorum Yap
+            </button>
+        )}
+
             </div>
             </div>
      ))}
@@ -95,7 +122,88 @@ function Orders() {
     Toplam:
     {" "}
     {order.totalPrice} TL
-    </h3>
+    </h3>{showReviewForm && selectedProduct && (
+    <div className="review-form">
+
+        <h3>
+            {selectedProduct.name} - Değerlendir
+        </h3>
+
+        <div className="rating-select">
+
+            {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                    key={star}
+                    type="button"
+                    className={
+                        star <= rating
+                            ? "star active"
+                            : "star"
+                    }
+                    onClick={() => setRating(star)}
+                >
+                    ★
+                </button>
+            ))}
+
+        </div>
+
+        <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder="Ürün hakkında ne düşünüyorsunuz?"
+        />
+
+        <div className="review-form-buttons">
+            <button
+            className="submit-review-btn"
+            onClick={async () => {
+            if (!comment.trim()) {
+                alert("Lütfen yorum yazın.");
+                return;
+          }
+            try {
+                const userId =localStorage.getItem("userId");
+                const userName =localStorage.getItem("username");
+
+                await axios.post("http://localhost:5070/api/Review",
+                    {
+                        productId: selectedProduct.id,
+                        userId: Number(userId),
+                        userName: userName || "Müşteri",
+                        rating: rating,
+                        comment: comment
+                    }
+            );
+            alert("Yorumunuz başarıyla gönderildi.");
+                        setShowReviewForm(false);
+                        setSelectedProduct(null);
+                        setComment("");
+                        setRating(5);
+
+            } catch (error) {
+                console.error("Yorum gönderilemedi:",
+                error
+                );
+                alert("Yorum gönderilemedi.");
+                    }
+                }}
+            >
+            Yorumu Gönder
+            </button>
+
+            <button
+                className="cancel-review-btn"
+                onClick={() => {
+                setShowReviewForm(false);
+                setSelectedProduct(null);
+                }}
+            >
+                Vazgeç
+            </button>
+        </div>
+    </div>
+)}
     </div>
 ))
 )}
@@ -119,8 +227,41 @@ function Orders() {
                 </p> 
                 
             <p> Durum: 
-            <span className="status"> {order.status} </span> 
+            <span className={`status ${
+            order.status === "Tamamlandı"
+            ? "completed"
+            : order.status === "İptal Edildi"
+            ? "cancelled"
+            : "preparing"
+            }`}>
+            {order.status}
+            </span>
             </p> 
+            {order.status !== "Tamamlandı" && (
+    <button
+        onClick={async () => {
+            try {
+                await axios.put(
+                    `http://localhost:5070/api/Order/${order.orderId}/approve`
+                );
+
+                alert("Sipariş onaylandı.");
+
+                const response = await axios.get(
+                    `http://localhost:5070/api/Order/seller/${userId}`
+                );
+
+                setOrders(response.data);
+
+            } catch (error) {
+                console.error("Sipariş onaylanamadı:", error);
+                alert("Sipariş onaylanamadı.");
+            }
+            }}
+            >
+            Siparişi Onayla
+            </button>
+            )}
             <hr /> 
             
             <div className="order-item"> 

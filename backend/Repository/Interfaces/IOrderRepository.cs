@@ -14,4 +14,5 @@ public interface IOrderRepository
     Task ClearCartAsync(Cart cart);
     Task<List<Order>> GetOrdersByCustomerIdAsync(int customerId);
     Task<List<OrderItem>> GetOrderItemsBySellerIdAsync(int sellerId);
+    Task<Order?> GetByIdAsync(int orderId);
 }

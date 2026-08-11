@@ -148,6 +148,17 @@ public class UserController : ControllerBase
         });
     }
 
+    var allowedExtensions = new[] { ".jpg", ".jpeg" };
+    var extension = Path.GetExtension(dto.Image.FileName).ToLowerInvariant();
+
+    if (!allowedExtensions.Contains(extension))
+    {
+    return BadRequest(new
+    {
+        message = "Sadece JPG ve JPEG formatındaki fotoğraflar kabul edilir."
+    });
+    }
+
     var uploadsFolder = Path.Combine(
         Directory.GetCurrentDirectory(),
         "Uploads",
