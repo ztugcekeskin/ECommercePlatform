@@ -10,7 +10,6 @@ namespace WebAPI.Controllers;
 public class OrderController : ControllerBase
 {
     private readonly IOrderRepository _orderRepository;
-
     public OrderController(IOrderRepository orderRepository)
     {
         _orderRepository = orderRepository;
@@ -94,7 +93,6 @@ public class OrderController : ControllerBase
             }
         })
     });
-
     return Ok(result);
     }
 
@@ -121,7 +119,6 @@ public class OrderController : ControllerBase
         unitPrice = item.UnitPrice,
         totalPrice = item.UnitPrice * item.Quantity
     });
-
     return Ok(result);
     }
 
@@ -137,7 +134,6 @@ public class OrderController : ControllerBase
             message = "Sipariş bulunamadı."
         });
     }
-
     order.Status = "Tamamlandı";
 
     await _orderRepository.SaveChangesAsync();

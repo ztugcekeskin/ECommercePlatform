@@ -68,9 +68,15 @@
   font-size: 20px;
 }
 
+.average-rating {
+    font-weight: bold;
+    color: white;
+    font-size: 16px;
+}
+
 .review-count {
-  color: #777;
-  font-size: 14px;
+    color: #9ca3af;
+    font-size: 14px;
 }
 
 /* FİYAT */

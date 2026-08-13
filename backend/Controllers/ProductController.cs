@@ -12,7 +12,6 @@ namespace WebAPI.Controllers;
 public class ProductController : ControllerBase
 {
     private readonly IProductRepository _productRepository;
-
     public ProductController(IProductRepository productRepository)
     {
         _productRepository = productRepository;
@@ -28,7 +27,6 @@ public class ProductController : ControllerBase
 
         return Ok(searchedProducts);
     }
-
     var products = await _productRepository.GetAllAsync();
 
     return Ok(products);
@@ -51,8 +49,7 @@ public class ProductController : ControllerBase
     var products = await _productRepository.FilterAsync(
         search,
         category,
-        sort);
-
+        sort); 
     return Ok(products);
     }
 
@@ -102,7 +99,6 @@ public async Task<IActionResult> GetProduct(int id)
 
         return Ok(products);
     }
-
     var sellerProducts =
         await _productRepository.GetBySellerIdAsync(sellerId);
 

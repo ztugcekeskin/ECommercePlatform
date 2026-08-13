@@ -32,6 +32,9 @@ function ProductDetail() {
       });
   }, [id]);
 
+  const averageRating = reviews.length > 0 ? reviews.reduce(
+      (total, review) => total + review.rating, 0) / reviews.length : 0;
+
   if (!product) {
     return <p>Ürün yükleniyor...</p>;
   }
@@ -57,11 +60,22 @@ function ProductDetail() {
           <h1>{product.name}</h1>
 
           <div className="product-rating">
-            <span className="stars">★★★★★</span>
 
-            <span className="review-count">
-              {reviews.length} yorum
-            </span>
+          <span className="stars">
+          {reviews.length > 0
+          ? "★".repeat(Math.round(averageRating))
+          : "☆☆☆☆☆"}
+          </span>
+
+          {reviews.length > 0 && (
+          <span className="average-rating">
+            {averageRating.toFixed(1)}
+          </span>
+          )}
+
+          <span className="review-count">
+          ({reviews.length} yorum)
+          </span>
           </div>
 
           <div className="seller-info">

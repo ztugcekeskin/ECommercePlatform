@@ -181,12 +181,12 @@ function Orders() {
                         setComment("");
                         setRating(5);
 
-            } catch (error) {
-                console.error("Yorum gönderilemedi:",
-                error
-                );
-                alert("Yorum gönderilemedi.");
-                    }
+            } 
+            catch (error) {
+            console.error("Yorum gönderilemedi:", error);
+            alert(error.response?.data?.message || "Yorum gönderilemedi."
+            );
+            }
                 }}
             >
             Yorumu Gönder

@@ -20,8 +20,27 @@ public class ReviewRepository
             .ToListAsync();
     }
 
+    public async Task<bool> HasUserReviewedProductAsync(
+    int userId,
+    int productId)
+    {
+    return await _reviews
+        .Find(r =>
+            r.UserId == userId &&
+            r.ProductId == productId)
+        .AnyAsync();
+    }
+
     public async Task AddAsync(Review review)
     {
         await _reviews.InsertOneAsync(review);
     }
+
+    public async Task<List<Review>> GetByProductIdsAsync(List<int> productIds)
+    {
+    return await _reviews
+        .Find(r => productIds.Contains(r.ProductId))
+        .SortByDescending(r => r.CreatedAt)
+        .ToListAsync();
+    }   
 }
