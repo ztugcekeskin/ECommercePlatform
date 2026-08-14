@@ -76,42 +76,38 @@
 /* Sağ taraf - ürün */
 .review-product {
     width: 300px;
-
     display: flex;
     align-items: center;
     gap: 18px;
-
     padding: 15px;
-
     background: #374151;
     border-radius: 12px;
-
     border: 1px solid #4b5563;
 }
-
-.review-product img {
-    width: 100px;
-    height: 100px;
-
-    object-fit: cover;
-
+.review-product {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #111827;
+    padding: 12px;
     border-radius: 10px;
-    background: white;
 }
-
-.review-product-info {
-    flex: 1;
+.review-product img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
 }
-
-.review-product-info h4 {
+.review-product div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.review-product span {
+    color: #9ca3af;
+    font-size: 13px;
+}
+.review-product strong {
     color: white;
-    margin: 0 0 10px;
-    font-size: 17px;
-}
-
-.review-product-info p {
-    color: #22c55e;
-    margin: 0;
     font-size: 16px;
-    font-weight: bold;
 }

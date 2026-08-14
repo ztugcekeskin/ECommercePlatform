@@ -220,11 +220,12 @@ function Orders() {
             <p>Ürünlerinize henüz sipariş verilmedi.</p>
         ) : ( 
         orders.map(order => ( 
-        <div className="order-card" key={order.orderId} > 
-        <h3> Sipariş #{order.orderId} </h3> 
-            <p> Tarih:{" "} 
-                {new Date(order.orderDate).toLocaleString()} 
-                </p> 
+        <div
+        className="order-card"
+        key={`${order.orderId}-${order.product.id}`}>        <h3> Sipariş #{order.orderId} </h3> 
+        <p> Tarih:{" "} 
+            {new Date(order.orderDate).toLocaleString()} 
+        267576777777777777777</p> 
                 
             <p> Durum: 
             <span className={`status ${

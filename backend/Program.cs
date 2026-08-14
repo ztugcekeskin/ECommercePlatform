@@ -16,7 +16,7 @@ builder.Services.Configure<MongoDbSettings>(
     var mongoDatabaseName =
     builder.Configuration["MongoDbSettings:DatabaseName"];
 
-    var mongoClient = new MongoClient(mongoConnectionString);
+var mongoClient = new MongoClient(mongoConnectionString);
 
 builder.Services.AddSingleton<IMongoClient>(mongoClient);
 
@@ -33,8 +33,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<ReviewRepository>();
-builder.Services.AddCors(options =>
+builder.Services.AddScoped<IChatMessageRepository, ChatMessageRepository>();builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {

@@ -76,43 +76,32 @@ public class ReviewController : ControllerBase
     public async Task<IActionResult> GetSellerReviews(int sellerId)
     {
     var products = await _productRepository.GetBySellerIdAsync(sellerId);
-
-    var productIds = products
-        .Select(p => p.Id)
-        .ToList();
-
-    if (!productIds.Any())
+    var result = new List<object>();
+    foreach (var product in products)
     {
-        return Ok(new List<object>());
-    }
+        var reviews = await _reviewRepository
+            .GetByProductIdAsync(product.Id);
 
-    var reviews = await _reviewRepository
-        .GetByProductIdsAsync(productIds);
-
-    var result = reviews.Select(review =>
-    {
-        var product = products
-            .FirstOrDefault(p => p.Id == review.ProductId);
-
-        return new
+        foreach (var review in reviews)
         {
-            id = review.Id,
-            userId = review.UserId,
-            userName = review.UserName,
-            rating = review.Rating,
-            comment = review.Comment,
-            createdAt = review.CreatedAt,
-
-            product = product == null ? null : new
+            result.Add(new
             {
-                id = product.Id,
-                name = product.Name,
-                price = product.Price,
-                imageUrl = product.ImageUrl
-            }
-        };
-    });
+                id = review.Id,
+                userId = review.UserId,
+                userName = review.UserName,
+                rating = review.Rating,
+                comment = review.Comment,
+                createdAt = review.CreatedAt,
+
+                product = new
+                {
+                    id = product.Id,
+                    name = product.Name,
+                    imageUrl = product.ImageUrl
+                }
+            });
+        }
+    }
     return Ok(result);
     }
-
 }

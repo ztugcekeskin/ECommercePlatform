@@ -11,6 +11,7 @@ import Payment from "./pages/Payment/Payment";
 import Orders from "./pages/Orders/Orders";
 import ProductDetail from "./pages/Products/ProductDetail";
 import Reviews from "./pages/Reviews/Reviews";
+import Chat from "./pages/Chat/Chat";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/orders" element={<Orders />} />
         <Route path="/seller-orders" element={<Orders />} />
         <Route path="/reviews" element={<Reviews />} />
+        <Route path="/chat" element={<Chat />} />
         </Routes>
 
       <Footer />
