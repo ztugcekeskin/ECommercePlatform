@@ -10,7 +10,8 @@ function Chat() {
     const userId = localStorage.getItem("userId");
 
     useEffect(() => {
-        if (!userId) return
+    if (!userId) return;
+    const getMessages = () => {
         axios
             .get(`http://localhost:5070/api/Chat/user/${userId}`)
             .then((response) => {
@@ -20,6 +21,17 @@ function Chat() {
             .catch((error) => {
                 console.error("Mesajlar alınamadı:", error);
             });
+
+    };
+
+    getMessages();
+    // Her saniye mesajları kontrol et
+    const interval = setInterval(() => {
+        getMessages();
+    }, 1000);
+    return () => {
+        clearInterval(interval);
+    };
 }, [userId]);
 
     // Müşterileri grupla
@@ -92,7 +104,7 @@ function Chat() {
             onClick={async () => {
             setSelectedUser(conversation);
             try {
-        const response = await axios.get(
+            const response = await axios.get(
             `http://localhost:5070/api/Chat?userId=${userId}&otherUserId=${conversation.userId}&productId=${conversation.productId}`
         );
 
