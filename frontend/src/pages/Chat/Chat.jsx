@@ -10,29 +10,73 @@ function Chat() {
     const userId = localStorage.getItem("userId");
 
     useEffect(() => {
-    if (!userId) return;
-    const getMessages = () => {
-        axios
-            .get(`http://localhost:5070/api/Chat/user/${userId}`)
-            .then((response) => {
-                console.log("Chat messages:", response.data);
-                setMessages(response.data);
-            })
-            .catch((error) => {
-                console.error("Mesajlar alınamadı:", error);
-            });
 
+    if (!userId) return;
+
+    const getMessages = async () => {
+
+        try {
+
+            const response = await axios.get(
+                `http://localhost:5070/api/Chat/user/${userId}`
+            );
+
+            console.log("Chat messages:", response.data);
+
+            setMessages(response.data);
+
+        } catch (error) {
+
+            console.error("Mesajlar alınamadı:", error);
+
+        }
     };
 
     getMessages();
-    // Her saniye mesajları kontrol et
+
     const interval = setInterval(() => {
         getMessages();
     }, 1000);
+
     return () => {
         clearInterval(interval);
     };
+
 }, [userId]);
+
+    useEffect(() => {
+
+    if (!selectedUser) return;
+
+    const getConversationMessages = async () => {
+
+        try {
+
+            const response = await axios.get(
+                `http://localhost:5070/api/Chat?userId=${userId}&otherUserId=${selectedUser.userId}&productId=${selectedUser.productId}`
+            );
+
+            setConversationMessages(response.data);
+
+        } catch (error) {
+
+            console.error("Konuşma alınamadı:", error);
+
+        }
+    };
+
+    getConversationMessages();
+
+    const interval = setInterval(() => {
+        getConversationMessages();
+    }, 1000);
+
+    return () => {
+        clearInterval(interval);
+    };
+
+}, [selectedUser, userId]);
+
 
     // Müşterileri grupla
     const conversations = Object.values(
