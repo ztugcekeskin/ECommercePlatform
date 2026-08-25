@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import logo from "../../assets/logo.png";
 import {FaHome,FaShoppingCart,FaBox,FaUser,FaSignInAlt,FaUserPlus} from "react-icons/fa";
 import "./Navbar.css";
@@ -15,23 +15,17 @@ function Navbar() {
   };
 
   const [search, setSearch] = useState("");
+  const handleSearch = (e) => {
+  if (e.key === "Enter") {
+    const encodedSearch = encodeURIComponent(search);
 
-useEffect(() => {
-        if (search.trim() === "") {
-            return;
-        }
-    const timer = setTimeout(() => {
-    const encodedSearch = encodeURIComponent(search.trim());
-      if (role === "Seller") {
-          navigate(`/my-products?search=${encodedSearch}`);
-      } else {
-          navigate(`/?search=${encodedSearch}`);
-      }
-  }, 500);
-  return () => {
-      clearTimeout(timer);
-  };
-}, [search, role, navigate]);
+    if (role === "Seller") {
+      navigate(`/my-products?search=${encodedSearch}`);
+    } else {
+      navigate(`/?search=${encodedSearch}`);
+    }
+  }
+};
 
   return (
     <header className="navbar">
@@ -48,6 +42,7 @@ useEffect(() => {
           placeholder="Ürün ara..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={handleSearch}
         />
       </div>
 
