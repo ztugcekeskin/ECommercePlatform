@@ -49,23 +49,24 @@ function Reviews() {
 
     {review.product && (
         <div className="review-product">
-            <img src={
-                review.product.imageUrl
-                ? "http://localhost:5070" +
-                  review.product.imageUrl
-                : "https://placehold.co/120x120?text=Ürün"
-            }
-            alt={review.product.name}
-        />
 
-        <div className="review-product-info">
+    <img
+        src={
+            review.product.imageUrl
+                ? "http://localhost:5070" + review.product.imageUrl
+                : "https://placehold.co/100x100?text=Ürün"
+        }
+        alt={review.product.name}
+    />
+    <div>
+        <span>Ürün</span>
 
-            <h4>{review.product.name}</h4>
+        <strong>
+            {review.product.name}
+        </strong>
+    </div>
 
-            <p>{review.product.price} TL</p>
-
-            </div>
-        </div>
+</div>
         )}
     </div>
     ))

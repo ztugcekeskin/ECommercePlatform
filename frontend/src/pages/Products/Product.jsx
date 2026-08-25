@@ -13,22 +13,24 @@ function Product() {
   const navigate = useNavigate();
 
   useEffect(() => {
-
-  const url =
-    `http://localhost:5070/api/Product/filter` +
-    `?search=${encodeURIComponent(searchTerm)}` +
-    `&category=${encodeURIComponent(category)}` +
-    `&sort=${encodeURIComponent(sort)}`;
-
-  axios
-    .get(url)
-    .then((response) => {
-      setProducts(response.data);
-    })
-    .catch((error) => {
+    const timer = setTimeout(() => {
+    const url =
+      `http://localhost:5070/api/Product/filter` +
+      `?search=${encodeURIComponent(searchTerm)}` +
+      `&category=${encodeURIComponent(category)}` +
+      `&sort=${encodeURIComponent(sort)}`;
+    axios
+      .get(url)
+      .then((response) => {
+          setProducts(response.data);
+      })
+      .catch((error) => {
       console.error(error);
-    });
-
+      });
+  }, 500);
+return () => {
+    clearTimeout(timer);
+};
 }, [searchTerm, category, sort]);
   
   
