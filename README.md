@@ -10,9 +10,8 @@ A full-stack e-commerce web application developed during my software development
 * ➕ Adding and managing products
 * 🛒 Shopping cart management
 * 📦 Order management
-* 💬 Instant messaging between users
+* 💬 Instant messaging between sellers and customers
 * 👤 User profile management
-* 📷 Profile photo upload
 * 🔎 Product search
 * ⭐ Product reviews and ratings
 
@@ -109,7 +108,7 @@ http://localhost:5070
 The project uses two databases:
 
 * **PostgreSQL** for users, products, carts, orders, and order items.
-* **MongoDB** for instant messaging.
+* **MongoDB** for instant messaging and reviews.
 
 Database connection settings should be configured before running the application.
 
