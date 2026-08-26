@@ -1,10 +1,12 @@
 using WebAPI.Settings;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Data;
+using WebAPI.Services;
 using WebAPI.Repositories;
 using WebAPI.Repositories.Interfaces;
 using Microsoft.Extensions.FileProviders;
 using MongoDB.Driver;
+using System.Net.WebSockets;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +45,10 @@ builder.Services.AddScoped<IChatMessageRepository, ChatMessageRepository>();buil
     });
 });
 
+builder.Services.AddControllers();
+
+builder.Services.AddSingleton<ChatWebSocketHandler>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -64,6 +70,53 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseCors("AllowAll");
 
 app.UseAuthorization();
+
+app.UseWebSockets();
+app.Map("/ws/chat/{userId}", async context =>
+{
+    if (!context.WebSockets.IsWebSocketRequest)
+    {
+        context.Response.StatusCode = 400;
+        return;
+    }
+
+    var userIdString = context.Request.RouteValues["userId"]?.ToString();
+
+    if (!int.TryParse(userIdString, out int userId))
+    {
+        context.Response.StatusCode = 400;
+        return;
+    }
+
+    var handler = context.RequestServices
+        .GetRequiredService<ChatWebSocketHandler>();
+
+    using var socket = await context.WebSockets.AcceptWebSocketAsync();
+
+    handler.AddConnection(userId, socket);
+
+    try
+    {
+        var buffer = new byte[4096];
+
+        while (socket.State == WebSocketState.Open)
+        {
+            var result = await socket.ReceiveAsync(
+                new ArraySegment<byte>(buffer),
+                CancellationToken.None
+            );
+
+            if (result.MessageType == WebSocketMessageType.Close)
+            {
+                break;
+            }
+        }
+    }
+    finally
+    {
+        handler.RemoveConnection(userId);
+    }
+});
 
 app.MapControllers();
 

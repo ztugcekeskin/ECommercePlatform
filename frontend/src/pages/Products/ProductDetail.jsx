@@ -5,12 +5,12 @@ import axios from "axios";
 
 function ProductDetail() {
   const { id } = useParams();
-
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [chatOpen, setChatOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     // PostgreSQL için
@@ -40,7 +40,7 @@ function ProductDetail() {
     if (!product) return;
 
     const customerId = localStorage.getItem("userId");
-
+    
     axios
         .get(
             `http://localhost:5070/api/Chat?userId=${customerId}&otherUserId=${product.seller.id}&productId=${id}`
@@ -55,36 +55,96 @@ function ProductDetail() {
 
 }, [product, id]);
 
+  useEffect(() => {
+    if (!product) return;
+
+    const customerId = Number(localStorage.getItem("userId"));
+
+    console.log("WebSocket bağlantısı deneniyor:", customerId);
+
+    const ws = new WebSocket(
+        `ws://localhost:5070/ws/chat/${customerId}`
+    );
+
+    ws.onopen = () => {
+        console.log("✅ ProductDetail WebSocket bağlantısı kuruldu!");
+        setSocket(ws);
+    };
+
+    ws.onmessage = (event) => {
+        try {
+            const newMessage = JSON.parse(event.data);
+
+            console.log("📩 ProductDetail yeni mesaj:", newMessage);
+
+            // Sadece bu ürünün konuşmasına ait mesajı ekle
+            if (
+                Number(newMessage.productId) === Number(id) &&
+                (
+                    Number(newMessage.senderId) === customerId ||
+                    Number(newMessage.receiverId) === customerId
+                )
+            ) {
+                setChatMessages((prev) => [
+                    ...prev,
+                    newMessage
+                ]);
+            }
+
+        } catch (error) {
+            console.error("WebSocket mesajı okunamadı:", error);
+        }
+    };
+
+    ws.onerror = (error) => {
+        console.error("❌ ProductDetail WebSocket hatası:", error);
+    };
+
+    ws.onclose = () => {
+        console.log("🔌 ProductDetail WebSocket bağlantısı kapandı");
+        setSocket(null);
+    };
+
+    return () => {
+        ws.close();
+    };
+
+}, [product, id]);
+
   const averageRating = reviews.length > 0 ? reviews.reduce(
       (total, review) => total + review.rating, 0) / reviews.length : 0;
 
     const sendMessage = async () => {
-
-    if (!message.trim()) {
+    if (!message.trim() || !product) {
         return;
     }
 
-    const customerId = localStorage.getItem("userId");
+    const customerId = Number(localStorage.getItem("userId"));
+    const sellerId = Number(product.seller.id);
+
+    console.log("Customer ID:", customerId);
+    console.log("Seller ID:", sellerId);
+    console.log("Product ID:", id);
 
     try {
-    await axios.post("http://localhost:5070/api/Chat",
-        {
-          senderId: Number(customerId),
-          receiverId: product.seller.id,
-          productId: Number(id),
-          message: message
-        }
-      );
+        const response = await axios.post(
+            "http://localhost:5070/api/Chat",
+            {
+                senderId: customerId,
+                receiverId: sellerId,
+                productId: Number(id),
+                message: message.trim()
+            }
+        );
 
-      setMessage("");
-        // Mesaj gönderildikten sonra konuşmayı tekrar getir
-      const response = await axios.get(`http://localhost:5070/api/Chat?userId=${customerId}&otherUserId=${product.seller.id}&productId=${id}`);
-        setChatMessages(response.data);
+        console.log("📤 Mesaj gönderildi:", response.data);
+
+        setMessage("");
 
     } catch (error) {
         console.error("Mesaj gönderilemedi:", error);
     }
-  };
+};
 
   if (!product) {
     return <p>Ürün yükleniyor...</p>;

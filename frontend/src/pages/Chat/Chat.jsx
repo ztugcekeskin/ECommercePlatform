@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "./Chat.css";
 
@@ -8,6 +8,102 @@ function Chat() {
     const [message, setMessage] = useState("");
     const [conversationMessages, setConversationMessages] = useState([]);
     const userId = localStorage.getItem("userId");
+    const socketRef = useRef(null);
+    const selectedUserRef = useRef(null);
+
+    useEffect(() => {
+    selectedUserRef.current = selectedUser;
+}, [selectedUser]);
+    
+    useEffect(() => {
+    if (!userId) {
+        console.log("WebSocket: userId bulunamadı.");
+        return;
+    }
+
+    console.log("WebSocket bağlantısı deneniyor:", userId);
+
+    const socket = new WebSocket(
+        `ws://localhost:5070/ws/chat/${userId}`
+    );
+
+    socketRef.current = socket;
+
+    socket.onopen = () => {
+        console.log("✅ WebSocket bağlantısı kuruldu!");
+    };
+
+    socket.onmessage = (event) => {
+
+    try {
+        const newMessage = JSON.parse(event.data);
+        console.log(
+            "📩 WebSocket mesajı:",
+            newMessage
+        );
+
+        setMessages((prev) => {
+            if (
+                newMessage.id &&
+                prev.some(
+                    (m) => m.id === newMessage.id
+                )
+            ) {
+                return prev;
+            }
+            return [...prev, newMessage];
+        });
+
+        const currentConversation =
+            selectedUserRef.current;
+
+        if (
+            currentConversation &&
+            Number(newMessage.productId) ===
+                Number(currentConversation.productId) &&
+            (
+                Number(newMessage.senderId) ===
+                    Number(currentConversation.userId) ||
+                Number(newMessage.receiverId) ===
+                    Number(currentConversation.userId)
+            )
+        ) {
+
+            setConversationMessages((prev) => {
+                if (
+                    newMessage.id &&
+                    prev.some(
+                        (m) => m.id === newMessage.id
+                    )
+                ) {
+                    return prev;
+                }
+                return [
+                    ...prev,
+                    newMessage
+                ];
+            });
+        }
+    } catch (error) {
+        console.error(
+            "WebSocket mesajı okunamadı:",
+            error
+        );
+    }
+};
+    socket.onerror = (error) => {
+        console.error("❌ WebSocket hatası:", error);
+    };
+
+    socket.onclose = (event) => {
+        console.log("🔌 WebSocket bağlantısı kapandı:", event);
+    };
+
+    return () => {
+        socket.close();
+        socketRef.current = null;
+    };
+}, [userId]);
 
     useEffect(() => {
 
@@ -34,14 +130,6 @@ function Chat() {
 
     getMessages();
 
-    const interval = setInterval(() => {
-        getMessages();
-    }, 1000);
-
-    return () => {
-        clearInterval(interval);
-    };
-
 }, [userId]);
 
     useEffect(() => {
@@ -67,63 +155,69 @@ function Chat() {
 
     getConversationMessages();
 
-    const interval = setInterval(() => {
-        getConversationMessages();
-    }, 1000);
-
-    return () => {
-        clearInterval(interval);
-    };
-
 }, [selectedUser, userId]);
 
 
     // Müşterileri grupla
     const conversations = Object.values(
-        messages.reduce((groups, message) => {
+    messages.reduce((groups, chatMessage) => {
 
-        const otherUserId =
-        message.senderId === Number(userId)
-        ? message.receiverId
-        : message.senderId;
+        const currentUserId = Number(userId);
 
-        const key = `${otherUserId}-${message.productId}`;
-            if (!groups[key]) {
+        let otherUserId;
+
+        if (Number(chatMessage.senderId) === currentUserId) {
+            otherUserId = Number(chatMessage.receiverId);
+        } else {
+            otherUserId = Number(chatMessage.senderId);
+        }
+
+        const productId = Number(chatMessage.productId);
+
+        // Aynı müşteri + aynı ürün = tek konuşma
+        const key = `${otherUserId}-${productId}`;
+
+        if (!groups[key]) {
             groups[key] = {
-            userId: otherUserId,
-            productId: message.productId,
-            messages: []
+                userId: otherUserId,
+                productId: productId,
+                messages: []
             };
-            }
-            groups[key].messages.push(message);
-            return groups;
-        }, {})
-    )
+        }
+
+        groups[key].messages.push(chatMessage);
+
+        return groups;
+
+    }, {})
+);
 
     const sendMessage = async () => {
 
     if (!message.trim() || !selectedUser) {
         return;
     }
+
+    const newMessage = {
+        senderId: Number(userId),
+        receiverId: Number(selectedUser.userId),
+        productId: Number(selectedUser.productId),
+        message: message.trim()
+    };
+
     try {
+
         await axios.post(
             "http://localhost:5070/api/Chat",
-            {
-                senderId: Number(userId),
-                receiverId: selectedUser.userId,
-                productId: selectedUser.productId,
-                message: message
-            }
+            newMessage
         );
 
         setMessage("");
-        // Konuşmayı tekrar getiriyor
-        const response = await axios.get(
-            `http://localhost:5070/api/Chat?userId=${userId}&otherUserId=${selectedUser.userId}&productId=${selectedUser.productId}`
-        );
-        setConversationMessages(response.data);
+
     } catch (error) {
+
         console.error("Mesaj gönderilemedi:", error);
+
     }
 };
 
