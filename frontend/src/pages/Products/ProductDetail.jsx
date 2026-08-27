@@ -126,6 +126,10 @@ function ProductDetail() {
     console.log("Seller ID:", sellerId);
     console.log("Product ID:", id);
 
+    if (customerId === sellerId) {
+    console.error("❌ Kullanıcı kendi ürününe mesaj gönderemez.");
+    return;
+    }
     try {
         const response = await axios.post(
             "http://localhost:5070/api/Chat",

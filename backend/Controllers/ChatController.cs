@@ -34,6 +34,15 @@ public class ChatController : ControllerBase
         });
     }
 
+    // Kullanıcı kendisine mesaj gönderemez
+    if (message.SenderId == message.ReceiverId)
+    {
+        return BadRequest(new
+        {
+            message = "Kullanıcı kendisine mesaj gönderemez."
+        });
+    }
+
     message.Id = "";
     message.CreatedAt = DateTime.UtcNow;
 
@@ -46,10 +55,7 @@ public class ChatController : ControllerBase
         jsonMessage
     );
 
-    return Ok(new
-    {
-        message = "Mesaj başarıyla gönderildi."
-    });
+    return Ok(message);
 }
 
     [HttpGet]
