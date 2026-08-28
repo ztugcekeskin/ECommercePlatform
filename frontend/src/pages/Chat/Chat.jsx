@@ -34,69 +34,54 @@ function Chat() {
     };
 
     socket.onmessage = (event) => {
-
     try {
         const newMessage = JSON.parse(event.data);
-        console.log(
-            "📩 WebSocket mesajı:",
-            newMessage
-        );
+        console.log("WebSocket mesajı:", newMessage);
+        const currentConversation = selectedUserRef.current;
 
-        setMessages((prev) => {
-            if (
-                newMessage.id &&
-                prev.some(
-                    (m) => m.id === newMessage.id
-                )
-            ) {
-                return prev;
-            }
-            return [...prev, newMessage];
-        });
-
-        const currentConversation =
-            selectedUserRef.current;
-
-        if (
-            currentConversation &&
-            Number(newMessage.productId) ===
-                Number(currentConversation.productId) &&
+        if (!currentConversation) {
+            return;
+        }
+        const currentUserId = Number(userId);
+        const otherUserId = Number(currentConversation.userId);
+        const currentProductId = Number(currentConversation.productId);
+        const isSameConversation =
+            Number(newMessage.productId) === currentProductId &&
             (
-                Number(newMessage.senderId) ===
-                    Number(currentConversation.userId) ||
-                Number(newMessage.receiverId) ===
-                    Number(currentConversation.userId)
-            )
-        ) {
-
-            setConversationMessages((prev) => {
-                if (
-                    newMessage.id &&
-                    prev.some(
-                        (m) => m.id === newMessage.id
-                    )
-                ) {
+                (
+                    Number(newMessage.senderId) === currentUserId &&
+                    Number(newMessage.receiverId) === otherUserId
+                ) ||
+                (
+                    Number(newMessage.senderId) === otherUserId &&
+                    Number(newMessage.receiverId) === currentUserId
+                )
+            );
+        if (isSameConversation) {
+            setConversationMessages((prev) => { // Aynı mesajı ikinci kez ekleme
+                if (prev.some((msg) => msg.id === newMessage.id)) {
                     return prev;
                 }
-                return [
-                    ...prev,
-                    newMessage
-                ];
+                return [...prev, newMessage];
             });
-        }
+        } // Sol taraftaki konuşma listesini yenile
+        setMessages((prev) => {
+            if (prev.some((msg) => msg.id === newMessage.id)) {
+                return prev;
+            }
+            return [newMessage, ...prev];
+        });
     } catch (error) {
-        console.error(
-            "WebSocket mesajı okunamadı:",
-            error
-        );
+        console.error("WebSocket mesajı okunamadı:", error);
     }
 };
+
     socket.onerror = (error) => {
-        console.error("❌ WebSocket hatası:", error);
+        console.error("WebSocket hatası:", error);
     };
 
     socket.onclose = (event) => {
-        console.log("🔌 WebSocket bağlantısı kapandı:", event);
+        console.log("WebSocket bağlantısı kapandı:", event);
     };
 
     return () => {
@@ -116,45 +101,31 @@ function Chat() {
             const response = await axios.get(
                 `http://localhost:5070/api/Chat/user/${userId}`
             );
-
-            console.log("Chat messages:", response.data);
-
+            console.log("Chat messages:", response.data)
             setMessages(response.data);
 
         } catch (error) {
-
             console.error("Mesajlar alınamadı:", error);
-
         }
     };
-
     getMessages();
-
 }, [userId]);
 
     useEffect(() => {
-
     if (!selectedUser) return;
-
+    selectedUserRef.current = selectedUser;
     const getConversationMessages = async () => {
-
         try {
-
             const response = await axios.get(
                 `http://localhost:5070/api/Chat?userId=${userId}&otherUserId=${selectedUser.userId}&productId=${selectedUser.productId}`
             );
-
             setConversationMessages(response.data);
 
         } catch (error) {
-
             console.error("Konuşma alınamadı:", error);
-
         }
     };
-
     getConversationMessages();
-
 }, [selectedUser, userId]);
 
 
@@ -163,7 +134,6 @@ function Chat() {
     messages.reduce((groups, chatMessage) => {
 
         const currentUserId = Number(userId);
-
         let otherUserId;
 
         if (Number(chatMessage.senderId) === currentUserId) {
@@ -171,10 +141,7 @@ function Chat() {
         } else {
             otherUserId = Number(chatMessage.senderId);
         }
-
-        const productId = Number(chatMessage.productId);
-
-        // Aynı müşteri + aynı ürün = tek konuşma
+        const productId = Number(chatMessage.productId); // Aynı müşteri + aynı ürün = tek konuşma
         const key = `${otherUserId}-${productId}`;
 
         if (!groups[key]) {
@@ -184,41 +151,34 @@ function Chat() {
                 messages: []
             };
         }
-
         groups[key].messages.push(chatMessage);
-
         return groups;
-
     }, {})
 );
 
-    const sendMessage = async () => {
-
+    const sendMessage = () => {
     if (!message.trim() || !selectedUser) {
         return;
     }
-
-    const newMessage = {
+    if (
+        !socketRef.current ||
+        socketRef.current.readyState !== WebSocket.OPEN
+    ) {
+        console.error("WebSocket bağlantısı açık değil.");
+        return;
+    }
+    const chatMessage = {
         senderId: Number(userId),
         receiverId: Number(selectedUser.userId),
         productId: Number(selectedUser.productId),
         message: message.trim()
     };
+    console.log("Satıcı WebSocket ile gönderiyor:", chatMessage);
+    socketRef.current.send(
+        JSON.stringify(chatMessage)
+    );
 
-    try {
-
-        await axios.post(
-            "http://localhost:5070/api/Chat",
-            newMessage
-        );
-
-        setMessage("");
-
-    } catch (error) {
-
-        console.error("Mesaj gönderilemedi:", error);
-
-    }
+    setMessage("");
 };
 
     return (
@@ -288,6 +248,7 @@ function Chat() {
             <button
                 onClick={() => {
                 setSelectedUser(null);
+                selectedUserRef.current = null;
                 setConversationMessages([]);
                 }}
             >

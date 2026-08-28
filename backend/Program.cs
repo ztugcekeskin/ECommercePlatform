@@ -7,6 +7,7 @@ using WebAPI.Repositories.Interfaces;
 using Microsoft.Extensions.FileProviders;
 using MongoDB.Driver;
 using System.Net.WebSockets;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -100,17 +101,36 @@ app.Map("/ws/chat/{userId}", async context =>
         var buffer = new byte[4096];
 
         while (socket.State == WebSocketState.Open)
-        {
-            var result = await socket.ReceiveAsync(
-                new ArraySegment<byte>(buffer),
-                CancellationToken.None
-            );
+{
+        var result = await socket.ReceiveAsync(
+        new ArraySegment<byte>(buffer),
+        CancellationToken.None
+    );
 
-            if (result.MessageType == WebSocketMessageType.Close)
-            {
-                break;
-            }
-        }
+    if (result.MessageType == WebSocketMessageType.Close)
+    {
+        break;
+    }
+
+    if (result.MessageType == WebSocketMessageType.Text)
+    {
+        var message = Encoding.UTF8.GetString(
+            buffer,
+            0,
+            result.Count
+        );
+
+        Console.WriteLine(
+            $"📩 WebSocket mesajı alındı: {message}"
+        );
+
+        await handler.HandleMessageAsync(
+            userId,
+            message
+        );
+    }
+}
+
     }
     finally
     {
