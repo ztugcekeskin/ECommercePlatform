@@ -114,7 +114,7 @@ function ProductDetail() {
   const averageRating = reviews.length > 0 ? reviews.reduce(
       (total, review) => total + review.rating, 0) / reviews.length : 0;
 
-    const sendMessage = async () => {
+    const sendMessage = () => {
     if (!message.trim() || !product) {
         return;
     }
@@ -126,28 +126,23 @@ function ProductDetail() {
     console.log("Seller ID:", sellerId);
     console.log("Product ID:", id);
 
-    if (customerId === sellerId) {
-    console.error("❌ Kullanıcı kendi ürününe mesaj gönderemez.");
-    return;
+    if (!socket || socket.readyState !== WebSocket.OPEN) {
+        console.error("WebSocket bağlantısı açık değil.");
+        return;
     }
-    try {
-        const response = await axios.post(
-            "http://localhost:5070/api/Chat",
-            {
-                senderId: customerId,
-                receiverId: sellerId,
-                productId: Number(id),
-                message: message.trim()
-            }
-        );
 
-        console.log("📤 Mesaj gönderildi:", response.data);
+    const chatMessage = {
+        senderId: customerId,
+        receiverId: sellerId,
+        productId: Number(id),
+        message: message.trim()
+    };
 
-        setMessage("");
+    console.log("📤 WebSocket ile gönderiliyor:", chatMessage);
 
-    } catch (error) {
-        console.error("Mesaj gönderilemedi:", error);
-    }
+    socket.send(JSON.stringify(chatMessage));
+
+    setMessage("");
 };
 
   if (!product) {

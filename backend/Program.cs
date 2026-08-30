@@ -81,7 +81,8 @@ app.Map("/ws/chat/{userId}", async context =>
         return;
     }
 
-    var userIdString = context.Request.RouteValues["userId"]?.ToString();
+    var userIdString =
+        context.Request.RouteValues["userId"]?.ToString();
 
     if (!int.TryParse(userIdString, out int userId))
     {
@@ -92,7 +93,8 @@ app.Map("/ws/chat/{userId}", async context =>
     var handler = context.RequestServices
         .GetRequiredService<ChatWebSocketHandler>();
 
-    using var socket = await context.WebSockets.AcceptWebSocketAsync();
+    using var socket =
+        await context.WebSockets.AcceptWebSocketAsync();
 
     handler.AddConnection(userId, socket);
 
@@ -101,36 +103,35 @@ app.Map("/ws/chat/{userId}", async context =>
         var buffer = new byte[4096];
 
         while (socket.State == WebSocketState.Open)
-{
-        var result = await socket.ReceiveAsync(
-        new ArraySegment<byte>(buffer),
-        CancellationToken.None
-    );
+        {
+            var result = await socket.ReceiveAsync(
+                new ArraySegment<byte>(buffer),
+                CancellationToken.None
+            );
 
-    if (result.MessageType == WebSocketMessageType.Close)
-    {
-        break;
-    }
+            if (result.MessageType == WebSocketMessageType.Close)
+            {
+                break;
+            }
 
-    if (result.MessageType == WebSocketMessageType.Text)
-    {
-        var message = Encoding.UTF8.GetString(
-            buffer,
-            0,
-            result.Count
-        );
+            if (result.MessageType == WebSocketMessageType.Text)
+            {
+                var message = Encoding.UTF8.GetString(
+                    buffer,
+                    0,
+                    result.Count
+                );
 
-        Console.WriteLine(
-            $"📩 WebSocket mesajı alındı: {message}"
-        );
+                Console.WriteLine(
+                    $"📩 WebSocket mesajı alındı: {message}"
+                );
 
-        await handler.HandleMessageAsync(
-            userId,
-            message
-        );
-    }
-}
-
+                await handler.HandleMessageAsync(
+                    userId,
+                    message
+                );
+            }
+        }
     }
     finally
     {
