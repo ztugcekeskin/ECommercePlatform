@@ -36,6 +36,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
 builder.Services.AddScoped<IChatMessageRepository, ChatMessageRepository>();builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -45,11 +46,11 @@ builder.Services.AddScoped<IChatMessageRepository, ChatMessageRepository>();buil
               .AllowAnyHeader();
     });
 });
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton<ChatWebSocketHandler>();
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
